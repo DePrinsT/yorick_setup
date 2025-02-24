@@ -1,0 +1,2015 @@
+
+
+
+                          Yorick Documentation
+                for functions, variables, and structures
+                         defined in file yeti.i
+                   Printed: Mon Feb 24 11:39:33 2025
+
+   Contents:
+
+      DBL_EPSILON                             is_sparse_matrix
+      DBL_MAX                                 is_symlink
+      DBL_MIN                                 is_tuple
+      FLT_EPSILON                             key
+      FLT_MAX                                 key
+      FLT_MIN                                 machine_constant
+      SAVE_BUILTINS                           make_dimlist
+      YETI_HOME                               make_hermitian
+      YETI_VERSION                            make_range
+      YETI_VERSION_MAJOR                      mem_base
+      YETI_VERSION_MICRO                      mem_clear
+      YETI_VERSION_MINOR                      mem_copy
+      YETI_VERSION_SUFFIX                     mem_info
+      Y_MAX_DFLT                              mem_peek
+      Y_MIN_DFLT                              member
+      Y_MMMARK                                member
+      Y_NULLER                                morph_closing
+      Y_PSEUDO                                morph_dilation
+      Y_RUBBER                                morph_enhance
+      Y_RUBBER1                               morph_erosion
+      __h_saved_builtins                      morph_white_top_hat
+      __h_show_pfx_a                          mvect_collect
+      __h_show_pfx_a                          mvect_create
+      __h_show_pfx_b                          mvect_push
+      __h_show_pfx_c                          mvect_resize
+      __h_show_pfx_d                          mvect_store
+      __h_show_worker                         mvmult
+      __lambda__                              name_of_symlink
+      anonymous                               native_byte_order
+      arc                                     nrefsof
+      cost_l2                                 parse_range
+      cost_l2l0                               product
+      cost_l2l1                               quick_interquartile_range
+      debug_refs                              quick_median
+      empty_tuple                             quick_select
+      fpe_handling                            rgl_roughness_cauchy
+      fullsizeof                              rgl_roughness_cauchy_periodic
+      get_encoding                            rgl_roughness_l1
+      h_cleanup                               rgl_roughness_l1_periodic
+      h_clone                                 rgl_roughness_l2
+      h_copy                                  rgl_roughness_l2_periodic
+      h_debug                                 rgl_roughness_l2l0
+      h_delete                                rgl_roughness_l2l0_periodic
+      h_evaluator                             rgl_roughness_l2l1
+      h_first                                 rgl_roughness_l2l1_periodic
+      h_functor                               same_encoding
+      h_get                                   setup_package
+      h_grow                                  sinc
+      h_has                                   smooth3
+      h_info                                  sparse_expand
+      h_keys                                  sparse_grow
+      h_list                                  sparse_matrix
+      h_new                                   sparse_restore
+      h_next                                  sparse_save
+      h_number                                sparse_squeeze
+      h_pop                                   symbol_info
+      h_save                                  symlink_to_name
+      h_save_symbols                          symlink_to_variable
+      h_set                                   tuple
+      h_set_copy                              typemax
+      h_stat                                  typemin
+      heapsort                                value
+      install_encoding                        value_of_symlink
+      insure_temporary                        yeti_convolve
+      is_hash                                 yeti_init
+      is_mvect                                yeti_wavelet
+
+                                            FROM DBL_EPSILON TO DBL_EPSILON
+
+                                                                DBL_EPSILON
+/* DOCUMENT machine_constant(str)
+     Returns the value of the machine dependent constant given its name
+     STR.  STR is a scalar string which can be one of (prefixes "FLT_" and
+     "DBL_" are for single/double precision respectively):
+
+     "FLT_MIN",
+     "DBL_MIN" - minimum normalized positive floating-point number;
+
+     "FLT_MAX",
+     "DBL_MAX" - maximum representable finite floating-point number;
+
+     "FLT_EPSILON",
+     "DBL_EPSILON" - the difference between 1 and the least value greater
+             than 1 that is representable in the given floating point
+             type: B^(1 - P);
+
+     "FLT_MIN_EXP",
+     "DBL_MIN_EXP" - minimum integer EMIN such that FLT_RADIX^(EMIN - 1)
+             is a normalized floating-point value;
+
+     "FLT_MIN_10_EXP"
+     "DBL_MIN_10_EXP" - minimum negative integer such that 10 raised to
+             that power is in the range of normalized floating-point
+             numbers: ceil(log10(B)*(EMIN - 1));
+
+     "FLT_MAX_EXP",
+     "DBL_MAX_EXP" - maximum integer EMAX such that FLT_RADIX^(EMAX - 1)
+             is a normalized floating-point value;
+
+     "FLT_MAX_10_EXP"
+     "DBL_MAX_10_EXP" - maximum integer such that 10 raised to that power
+             is in the range of normalized floating-point numbers:
+             floor(log10((1 - B^(-P))*(B^EMAX)))
+
+     "FLT_RADIX" - radix of exponent representation, B;
+
+     "FLT_MANT_DIG",
+     "DBL_MANT_DIG" - number of base-FLT_RADIX significant digits P in the
+             mantissa;
+
+     "FLT_DIG",
+     "DBL_DIG" - number of decimal digits, Q, such that any floating-point
+             number with Q decimal digits can be rounded into a
+             floating-point number with P (FLT/DBL_MANT_DIG) radix B
+             (FLT_RADIX) digits and back again without change to the Q
+             decimal digits:
+                 Q = P*log10(B)                if B is a power of 10
+                 Q = floor((P - 1)*log10(B))   otherwise
+
+
+    SEE ALSO: get_encoding.
+ */
+
+                                                  FROM DBL_MAX TO YETI_HOME
+
+                                                                    DBL_MAX
+     /* SEE DBL_EPSILON     */
+
+                                                                    DBL_MIN
+     /* SEE DBL_EPSILON     */
+
+                                                                FLT_EPSILON
+     /* SEE DBL_EPSILON     */
+
+                                                                    FLT_MAX
+     /* SEE DBL_EPSILON     */
+
+                                                                    FLT_MIN
+     /* SEE DBL_EPSILON     */
+
+                                                              SAVE_BUILTINS
+/* DOCUMENT h_restore_builtin(name);
+     Get the original definition of builtin function NAME.  This is useful if
+     you deleted by accident a builtin function and want to recover it; for
+     instance:
+        sin = 1;
+        ...
+        sin = h_restore_builtin("sin");
+     would restore the definition of the sine function that was redefined by
+     the assignation.
+
+     To enable this feature, you must define the global variable SAVE_BUILTINS
+     to be true before loading the Yeti package.  For instance:
+        SAVE_BUILTINS = 1;
+        include, "yeti.i";
+     then all all current definitions of builtin functions will be referenced
+     in global hash table __h_saved_builtins and could be retrieved by calling
+     h_restore_builtin.
+
+     Note that this feature is disabled in batch mode.
+
+   SEE ALSO h_new, h_save_symbols, batch. */
+
+                                                                  YETI_HOME
+/* DOCUMENT YETI_HOME           the directory where Yeti is installed
+         or YETI_VERSION        version of current Yeti interpreter (string)
+         or YETI_VERSION_MAJOR  major Yeti version number (integer)
+         or YETI_VERSION_MINOR  minor Yeti version number (integer)
+         or YETI_VERSION_MICRO  micro Yeti version number (integer)
+         or YETI_VERSION_SUFFIX suffix Yeti version number (string, e.g. "pre1")
+         or yeti_init;
+         or yeti_init();
+
+     YETI_VERSION and YETI_HOME are global variables predefined by Yeti to
+     store its version number (as "MAJOR.MINOR.MICROSUFFIX") and installation
+     directory (e.g. "/usr/local/lib/yeti-VERSION").  In YETI_VERSION, a
+     non-empty suffix like "x" or "pre1" indicates a development version.
+
+     The function yeti_init can be used to restore the values of YETI_VERSION
+     and YETI_HOME.  When called as a function, yeti_init() returns Yeti
+
+                                                 FROM YETI_HOME TO Y_MMMARK
+
+     version as a string.
+
+     If Yeti is loaded as a plugin, YETI_HOME is left undefined and no path
+     initialization is performed.  Otherwise, the first time yeti_init is
+     called (this is automatically done at Yeti startup), it set the default
+     path list for Yeti applications.
+
+     A convenient way to check if your script is parsed by Yeti is to do:
+
+       if (is_func(yeti_init) == 2) {
+         // we are in Yeti
+         ...
+       } else {
+         // not in Yeti
+         ...
+       }
+
+   SEE ALSO: Y_LAUNCH, Y_HOME, Y_SITE, Y_VERSION,
+             get_path, set_path.
+ */
+
+                                                               YETI_VERSION
+     /* SEE YETI_HOME     */
+
+                                                         YETI_VERSION_MAJOR
+     /* SEE YETI_HOME     */
+
+                                                         YETI_VERSION_MICRO
+     /* SEE YETI_HOME     */
+
+                                                         YETI_VERSION_MINOR
+     /* SEE YETI_HOME     */
+
+                                                        YETI_VERSION_SUFFIX
+     /* SEE YETI_HOME     */
+
+                                                                 Y_MAX_DFLT
+     /* SEE Y_MMMARK     */
+
+                                                                 Y_MIN_DFLT
+     /* SEE Y_MMMARK     */
+
+                                                                   Y_MMMARK
+/* DOCUMENT arr = parse_range(rng);
+         or rng = make_range(arr);
+
+     The parse_range() function converts the index range RNG into an array
+     of 4 long integers: [FLAGS,MIN,MAX,STEP].  The make_range() function
+     does the opposite.
+
+     For a completely specified range, FLAGS is 1.  Otherwise, FLAGS can be
+     Y_MMMARK for a matrix multiply marker (+) -- which is almost certainly a
+     syntax error in any other context -- Y_PSEUDO for the pseudo-range index
+     (-), Y_RUBBER for the .. index, Y_RUBBER1 for the * index, and Y_NULLER
+     for the result of where(0).  Bits Y_MIN_DFLT and Y_MAX_DFLT can be set in
+
+                                           FROM Y_MMMARK TO __h_show_worker
+
+     FLAGS to indicate whether the minimum or maximum is defaulted; there is
+     no flag for a default step, so there is no way to tell the difference
+     between x(:) and x(::1).
+
+   SEE ALSO: is_range.
+*/
+
+                                                                   Y_NULLER
+     /* SEE Y_MMMARK     */
+
+                                                                   Y_PSEUDO
+     /* SEE Y_MMMARK     */
+
+                                                                   Y_RUBBER
+     /* SEE Y_MMMARK     */
+
+                                                                  Y_RUBBER1
+     /* SEE Y_MMMARK     */
+
+                                                         __h_saved_builtins
+     /* SEE SAVE_BUILTINS     */
+
+                                                             __h_show_pfx_a
+/* DOCUMENT h_show_style;
+         or h_show_style, "ascii"/"utf8";
+         or h_show_style, a, b, c, d;
+
+      Set the prefixes used by `h_show`.  Without any arguments, restore the
+      default (new "utf8" style).  Called with a single argument, apply the
+      corresponding style ("ascii" or "utf8"). Can be called with 4 arguments
+      to set the 4 prefixes according to your taste.
+
+   SEE ALSO: h_show.
+ */
+
+                                                             __h_show_pfx_a
+     /* SEE __h_show_pfx_a     */
+
+                                                             __h_show_pfx_b
+     /* SEE __h_show_pfx_a     */
+
+                                                             __h_show_pfx_c
+     /* SEE __h_show_pfx_a     */
+
+                                                             __h_show_pfx_d
+     /* SEE __h_show_pfx_a     */
+
+                                                            __h_show_worker
+/* DOCUMENT h_show, tab;
+     Display contents of hash table TAB in a tree-like representation.
+     Keyword PREFIX can be used to prepend a prefix to the printed lines.
+     Keyword MAXCNT (default 5) can be used to specify the maximum number of
+     elements for printing array values.
+
+   SEE ALSO: h_show_style, h_info, h_keys. */
+
+                                                 FROM __lambda__ TO cost_l2
+
+                                                                 __lambda__
+     /* SEE anonymous     */
+
+                                                                  anonymous
+/* DOCUMENT f = anonymous(args, code);
+
+     Compile an anonymous function whose argument list and body are `args` and
+     `code` specified as (arrays of) strings. When the anonymous function is no
+     longer referenced, its definition is automatically deleted.
+
+     For instance:
+
+       f1 = anonymous("x", "c = x*x; return sqrt(c + abs(x));");
+       f2 = anonymous("x,y", "return cos(x*y + abs(x));");
+
+     define two functions f1 and f2 which take respectively one and two
+     arguments.
+
+     Other example:
+
+       a = _lst(12,34,67);
+       b = map(anonymous("x", "return sin(x);"), a);
+
+     yields a list `b` with its elements the sines of the elements of `a`.
+
+   SEE ALSO: map, include, funcdef, h_functor, closure.
+ */
+
+                                                                        arc
+/* DOCUMENT arc(x);
+     Returns angle X wrapped in range (-PI, +PI]. */
+
+                                                                    cost_l2
+/* DOCUMENT cost_l2(hyper, res [, grd])
+         or cost_l2l1(hyper, res [, grd])
+         or cost_l2l0(hyper, res [, grd])
+
+     These functions compute the cost for an array of residuals RES and
+     hyper-parameters HYPER (which can have 1, 2 or 3 elements).  If optional
+     third argument GRD is provided, it must be a simple variable reference
+     used to store the gradient of the cost function with respect to the
+     residuals.
+
+     The cost_l2() function returns the sum of squared residuals times
+     HYPER(1):
+
+        COST_L2 = MU*sum(RES^2)
+
+     where MU = HYPER(1).
+
+     The cost_l2l1() and cost_l2l0() functions are quadratic (L2) for small
+     residuals and non-quadratic (L1 and L0 respectively) for larger
+     residuals.  The thresholds for L2 / non-L2 transition are given by the
+     second and third value of HYPER.
+
+
+                                                  FROM cost_l2 TO cost_l2l1
+
+     If HYPER = [MU, TINF, TSUP] with TINF < 0 and TSUP > 0, an asymmetric
+     cost function is computed as:
+
+        COST_L2L0 = MU*(TINF^2*sum(atan(RES(INEG)/TINF)^2) +
+                        TSUP^2*sum(atan(RES(IPOS)/TPOS)^2))
+
+        COST_L2L1 = 2*MU*(TINF^2*sum(RES(INEG)/TINF -
+                                     log(1 + RES(INEG)/TINF)) +
+                          TSUP^2*sum(RES(IPOS)/TSUP -
+                                     log(1 + RES(IPOS)/TSUP)))
+
+     with INEG = where(RES < 0) and IPOS = where(RES >= 0).  If any or the
+     thresholds is negative or zero, the L2 norm is used for residuals with
+     the corresponding sign (same as having an infinite threshold level).  The
+     different cases are:
+
+        TINF < 0    ==> L2-L1/L0 norm for negative residuals
+        TINF = 0    ==> L2 norm for negative residuals
+        TSUP = 0    ==> L2 norm for positive residuals
+        TSUP > 0    ==> L2-L1/L0 norm for positive residuals
+
+     For residuals much smaller (in magnitude) than the thresholds, the non-L2
+     cost function behave as the L2 one.  For residuals much larger (in
+     magnitude), than the thresholds, the L2-L1 cost function is L1
+     (i.e. scales as abs(RES)) and the L2-L0 cost function is L0 (tends to
+     saturate).
+
+     If HYPER = [MU, T], with T>0, a symmetric non-L2 cost function is
+     computed with TINF = -T and TSUP = +T; in other words:
+
+        COST_L2L0 = MU*T^2*sum(atan(RES/T)^2)
+
+        COST_L2L1 = 2*MU*T^2*sum(abs(RES/T) - log(1 + abs(RES/T)))
+
+     If HYPER has only one element (MU) the L2 cost function is used.  Note
+     that HYPER = [MU, 0] or HYPER = [MU, 0, 0] is the same as HYPER = MU
+     (i.e. L2 cost function).  This is an implementation issue; by continuity,
+     the cost should be zero for a threshold equals to zero.
+
+
+   SEE ALSO:
+     rgl_roughness_l2;
+ */
+
+                                                                  cost_l2l0
+     /* SEE cost_l2     */
+
+                                                                  cost_l2l1
+     /* SEE cost_l2     */
+
+                                            FROM debug_refs TO get_encoding
+
+                                                                 debug_refs
+/* DOCUMENT dbg = debug_refs();
+
+     Yield an object which signals itself when eventually destroyed
+     and which can be queried for its current number of references and for a
+     unique mark.
+
+     This kind of object is useful for debugging reference counting.
+
+     `dbg.mark` yields the value of the mark of `dbg`.
+
+     `dbg.nrefs` yields the number of references of `dbg`.
+
+*/
+
+                                                                empty_tuple
+     /* SEE tuple     */
+
+                                                               fpe_handling
+/* DOCUMENT fpe_handling, on;
+     Turn Yorick specific handling of floating-point exceptions on or off.
+     If `on` is `0`, handling of floating-point exceptions is turned off;
+     else if `on` is `1`, previous handling of floating-point exceptions
+     is restored; else handling of floating-point exceptions is turned on.
+ */
+
+                                                                 fullsizeof
+/* DOCUMENT fullsizeof(obj)
+     Returns size in bytes of object OBJ.  Similar to sizeof (which see)
+     function but also works for lists, arrays of pointers, structures
+     or hash tables.
+
+   SEE ALSO: sizeof, is_list, is_array, is_hash.
+ */
+
+                                                               get_encoding
+/* DOCUMENT get_encoding(name);
+     Return the data layout for machine NAME, one of:
+       "native"   the current machine
+          (little-endians)
+       "i86"      Intel x86 Linux
+       "ibmpc"    IBM PC (2 byte int)
+       "alpha"    Compaq alpha
+       "dec"      DEC workstation (MIPS), Intel x86 Windows
+       "vax"      DEC VAX (H-double)
+       "vaxg"     DEC VAX (G-double)
+          (big-endians)
+       "xdr"      External Data Representation
+       "sun"      Sun, HP, SGI, IBM-RS6000, MIPS 32 bit
+       "sun3"     Sun-2 or Sun-3 (old)
+       "sgi64"    SGI, Sun, HP, IBM-RS6000 64 bit
+       "mac"      MacIntosh 68000 (power Mac, Gx are __sun)
+       "macl"     MacIntosh 68000 (12 byte double)
+       "cray"     Cray XMP, YMP
+
+
+                                               FROM get_encoding TO h_debug
+
+     The result is a vector of 32 long's as follow:
+       [size, align, order] repeated 6  times for  char,  short, int, long,
+                            float,  and double, except  that char  align is
+                            always  1,   so  result(2)  is   the  structure
+                            alignment (see struct_align).
+       [sign_address,  exponent_address, exponent_bits,
+        mantissa_address, mantissa_bits,
+        mantissa_normalization, exponent_bias]  repeated  twice  for  float
+                            and double.  See the comment at the top of file
+                            prmtyp.i for an explanation of these fields.
+
+     The total number of items is therefore 3*6 + 7*2 = 32.
+
+   SEE ALSO get_primitives, set_primitives, install_encoding, machine_constant. */
+
+                                                                  h_cleanup
+/* DOCUMENT h_cleanup, tab, 0/1;
+         or h_cleanup(tab, 0/1);
+     Delete all void members of hash table TAB and return TAB.  If the second
+     argument is a true (non nil and non-zero) empty members get deleted
+     recursively.
+
+   SEE ALSO h_new. */
+
+                                                                    h_clone
+/* DOCUMENT h_clone(tab, copy=, depth=);
+     Make a new hash table with same contents as TAB.  If keyword COPY is
+     true, a fresh copy is made for array members.  Otherwise, array members
+     are just referenced one more time by the new hash table.  If keyword
+     DEPTH is non-zero, every hash table referenced by TAB get also cloned
+     (this is done recursively) until level DEPTH has been reached (infinite
+     recursion if DEPTH is negative).  The value of keyword COPY is kept the
+     same across the recursions.
+
+   SEE ALSO h_new, h_set, h_copy. */
+
+                                                                     h_copy
+/* DOCUMENT h_copy(tab);
+         or h_copy(tab, recursively);
+     Effectively copy contents of hash table TAB into a new hash table that is
+     returned.  If argument RECURSIVELY is true, every hash table contained
+     into TAB get also duplicated.  This routine is needed because doing
+     CPY=TAB, where TAB is a hash table, would only make a new reference to
+     TAB: CPY and TAB would be the same object.
+
+   SEE ALSO h_new, h_set, h_clone. */
+
+                                                                    h_debug
+/* DOCUMENT h_debug, object, ...
+     Print out some debug information on OBJECT.
+
+     ****************************
+     *** WILL BE REMOVED SOON ***
+     ****************************/
+
+                                               FROM h_delete TO h_evaluator
+
+                                                                   h_delete
+/* DOCUMENT h_delete(tab, "key", ...);
+     Delete members KEY, ... from hash table TAB and return it.  Any KEY
+     arguments may be present and must be array of strings or nil.
+
+   SEE ALSO h_new, h_pop. */
+
+                                                                h_evaluator
+/* DOCUMENT h_evaluator(obj)
+         or h_evaluator(obj, evl);
+         or h_evaluator, obj, evl;
+
+     Set/query evaluator function of hash table OBJ.  When called as a
+     function, the evaluator of OBJ prior to any change is returned as a
+     scalar string.  If EVL is specified, it becomes the new evaluator of OBJ.
+     EVL must be a scalar string (the name of the evaluator function), or a
+     function, or nil.  If EVL is explicitely nil (for instance []) or a
+     NULL-string (for instance string(0)), the default behaviour is restored.
+
+     When hash table OBJ is used as:
+
+       OBJ(...)
+
+     where "..." represents any list of arguments (including none) then its
+     evaluator get called as:
+
+       EVL(OBJ, ...)
+
+     that is with OBJ prepended to the same argument list.
+
+
+   EXAMPLES:
+     // create a hash table:
+     obj = h_new(data=random(200), count=0);
+
+     // define a fucntion:
+     func eval_me(self, incr)
+     {
+        if (incr) h_set, self, count = (self.count + incr);
+        return self.data(1 + abs(self.count)%200);
+     }
+
+     // set evaluator (which must be already defined as a function):
+     h_evaluator, obj, eval_me;
+
+     obj(49);   // return 49-th value
+     obj();     // return same value
+     obj(3);    // return 51-th value
+     h_evaluator, obj, []; // restore standard behaviour
+
+     // set evaluator (not necessarily already defined as a function):
+     h_evaluator, obj, "some_name";
+
+     // then define the function code prior to use:
+
+                                              FROM h_evaluator TO h_functor
+
+     func some_name(self, a, b) { return self.count; }
+
+
+   SEE ALSO: h_new, h_get.
+ */
+
+                                                                    h_first
+/* DOCUMENT h_first(tab);
+         or h_next(tab, key);
+     Get first or next key in hash table TAB.  A NULL string is returned if
+     key is not found or if it is the last one (for h_next).  Thes routines
+     are useful to run through all entries in a hash table (however beware
+     that the hash table should be left unchanged during the scan).  For
+     instance:
+
+       for (key = h_first(tab); key; key = h_next(tab, key)) {
+         value = h_get(tab, key);
+         ...;
+       }
+
+   SEE ALSO h_new, h_keys. */
+
+                                                                  h_functor
+/* DOCUMENT obj = h_functor(fn, ..., var, ..., key=val, ..., "key", val, ...);
+
+     This function creates  a functor object OBJ (actually a  hash table) which
+     calls function FN with itself prepended to its argument list:
+
+         obj(arg1, arg2, ...)
+
+     is the same as:
+
+         fn(obj, arg1, arg2, ...)
+
+     First positional  argument FN specify  the function to  call, it can  be a
+     name or any object callable as a function (including another functor or an
+     anonymous function, see anonymous).
+
+     Any  other arguments  (either positional  ones  or keywords)  are used  to
+     populate the created  object with hash entries.  Any given  keyword -- say
+     KEY=VAL -- is stored  into the returned object with "KEY"  as its name and
+     VAL as its value.   Any simple variable reference -- say  VAR -- is stored
+     with name "VAR" and the contents of VAR as value.  Finally, pairs of names
+     and values -- say "KEY",VAL -- are stored with name "KEY" and value VAL.
+
+     If you  want to  use the  contents of  a variable  (not the  variable name
+     itself) as the  name of an entry,  just turn it into  an expression, e.g.,
+     noop(VAR) or VAR+"" will do the trick.
+
+     See h_save() for performance issues if that matters to you.
+
+
+   SEE ALSO: h_new, h_evaluator, h_save, anonymous, closure, wrap_args, noop.
+ */
+
+                                                       FROM h_get TO h_list
+
+                                                                      h_get
+/* DOCUMENT h_get(tab, key=);
+         or h_get(tab, "key");
+     Returns the value of member KEY of hash table TAB.  If no member KEY
+     exists in TAB, nil is returned.  h_get(TAB, "KEY") is identical to
+     get_member(TAB, "KEY") and also to TAB("KEY").
+
+   SEE ALSO h_new, get_member. */
+
+                                                                     h_grow
+/* DOCUMENT h_grow, tab, key, value, ...;
+     Grow member named KEY of hash table TAB by VALUE.  There may be any
+     number of key-value pairs.  If keyword FLATTEN is true, then VALUE(*)
+     instead of VALUE is appended to the former contents of TAB.KEY.  If
+     member KEY does not already exists in TAB, then a new member is created
+     with VALUE, or VALUE(*), as contents.
+
+   SEE ALSO h_new. */
+
+                                                                      h_has
+/* DOCUMENT h_has(tab, "key");
+         or h_has(tab, key=);
+     Returns 1 if member KEY is defined in hash table TAB, else 0.
+
+   SEE ALSO h_new. */
+
+                                                                     h_info
+/* DOCUMENT h_info, tab;
+         or h_info, tab, align;
+     List contents of hash table TAB in alphabetical order of keys.  If second
+     argument is true, the key names are right aligned.
+
+   SEE ALSO: h_new, h_keys, h_first, h_next, h_show, sort. */
+
+                                                                     h_keys
+/* DOCUMENT h_keys(tab);
+     Returns list of members of hash table TAB as a string vector of key
+     names.  The order in which keys are returned is arbitrary.
+
+   SEE ALSO h_new, h_first, h_next, h_number. */
+
+                                                                     h_list
+/* DOCUMENT h_list(tab);
+         or h_list(tab, sorted);
+     Convert hash table TAB into a list: _lst("KEY1", VALUE1, ...).  The order
+     of key-value pairs is arbitrary unless argument SORTED is true in which
+     case keys get sorted in alphabetical order.
+
+   SEE ALSO h_new, _lst, sort. */
+
+                                                        FROM h_new TO h_new
+
+                                                                      h_new
+/* DOCUMENT h_new();
+         or h_new(key1=val1, key2=val2...);
+         or h_new("key1", val1, "key2", val2, ...);
+
+     `h_new(...)` yields a new hash table with entries `key1` set to `val1`,
+     `key2` set to `val2`, ... There may be any number of key-value pairs. A
+     particular entry of a hash table can be specified as a scalar string, e.g.
+     `"key"`, or using keyword syntax, e.g. `key=...`. The keyword syntax is
+     however only possible if `key` is a valid Yorick's symbol name. Entry
+     value can be anything (even a non-array object).
+
+     `h_save` and `h_functor` (which to see) provide alternative means to
+     create hash table object.
+
+     `yhd_save` and `yhd_restore` (which to see) let you save and restore hash
+     tables to data files.
+
+     A hash table can be used to implement some kind of object-oriented
+     abstraction in Yorick.  However, in Yorick, a hash table must have a
+     simple tree structure -- no loops or rings are allowed (loops break
+     Yorick's memory manager -- beware).  You need to be careful not to do
+     this as the error will not be detected.
+
+     The difference between a hash table and a list object is that entries are
+     retrieved by key identifier rather than by order (by h_get, get_member or
+     dot dereferenciation). It is possible to dereference the contents of a
+     hash table using the dot operator (as for a structure) or by the `h_get`
+     function. For instance, it is legal to do:
+
+        tab = h_new(x=span(-7,7,100), name="my name", op=sin, scale=33);
+        plg, tab.op(tab.x), tab.x;
+
+     but the entry must already exists and there are restrictions to
+     assignation, i.e. only contents of array members can be assigned:
+
+        tab.name() = "some other string"; // ok
+        tab.name   = "some other string"; // error
+        tab.x(RANGE_OR_INDEX) = EXPR;     // ok if conformable AND member X
+                                          // is not a 'fast' scalar (int,
+                                          // long or double scalar)
+        tab.x                 = EXPR;     // error
+
+     and assignation cannot therefore change the dimension list or data type
+     of a hash table member.  Redefinition/creation of a member can always be
+     performed with the `h_set` function which is the recommended method to set
+     the value of a hash table member.
+
+     Hash tables behave differently depending how they are used:
+
+        tab.key      - De-reference hash member.
+        tab("key")   - Yield entry named `"key"` in hash table `tab`, this is
+                       exactly the same as: `h_get(tab, "key")`.
+        tab()        - Yield number of entries in hash table `tab`.
+        tab(i)       - Yield `i`-th entry in hash table `tab`; `i` is a scalar
+
+                                                        FROM h_new TO h_new
+
+                       integer and can be less or equal zero to start from the
+                       last one; if the hash table is unmodified, `tab(i)` is
+                       the same as `tab(keys(i))` where `keys = h_keys(tab)`.
+                       Beware that this is very inefficient way to access the
+                       contents of a hash table and will probably be removed
+                       soon. Use mixed vectors (see `mvect_collect`) instead if
+                       you need to collect objects of any kind and access them
+                       by integer indices.
+
+     However, beware that the behaviour of calls such that `tab(...)` may be
+     changed if the has table implements its own "evaluator" (see
+     `h_evaluator`).
+
+     For instance, to explore the whole hash table, there are different
+     possibilities:
+
+        keys = h_keys(tab);
+        n = numberof(keys);   // alternatively: n = tab()
+        for (i = 1; i <= n; ++i) {
+          a = tab(keys(i));
+          ...;
+        }
+
+     or:
+
+        for (key = h_first(tab); key; key = h_next(tab, key)) {
+          a = tab(key);
+          ...;
+        }
+
+     or:
+
+        n = tab();
+        for (i=1 ; i<=n ; ++i) {
+          a = tab(i);
+          ...;
+        }
+
+     the third form is slower for large tables and will be made obsolete
+     soon.
+
+     An important point to remember when using hash table is that hash members
+     are references to their contents, i.e.
+
+        h_set, hash, member=x;
+
+     makes an additional reference to array X and does not copy the array
+     although you can force that, e.g.:
+
+        tmp = x;                   // make a copy of array X
+        h_set, hash, member=tmp;   // reference copy in hash table
+        tmp = [];                  // delete one reference to the copy
+
+     Because assignation result is its rhs (right-hand-side), you cannot do:
+
+
+                                                       FROM h_new TO h_save
+
+        h_set, hash, member=(tmp = x);   // assignation result is X
+
+     Similarly, unlike Yorick array data types, a statement like x=hash does
+     not make a copy of the hash table, it merely makes an additional
+     reference to the list.
+
+
+   CAVEATS:
+     In Yorick (or Yeti), many objects can be used to reference other objects:
+     pointers, lists and hash tables.  Since Yorick uses a simple reference
+     counter to delete unused object, cyclic references (i.e.  an object
+     referencing itself either directly or indirectly) result in objects that
+     will not be properly deleted.  It is the user reponsibility to create no
+     cyclic references in order to avoid memory leaks.  Checking a potential
+     (or effective) cyclic reference would require recursive investigation of
+     all members of the parent object and could be very time consuming.
+
+   SEE ALSO: h_save, h_copy, h_get, h_has, h_keys, h_pop, h_set, h_stat,
+             h_first, h_next, yhd_save, yhd_restore, _lst, h_functor,
+             get_member. */
+
+                                                                     h_next
+     /* SEE h_first     */
+
+                                                                   h_number
+/* DOCUMENT h_number(tab);
+     Returns number of entries in hash table TAB.
+
+   SEE ALSO h_new, h_keys. */
+
+                                                                      h_pop
+/* DOCUMENT h_pop(tab, "key");
+         or h_pop(tab, key=);
+     Pop member KEY out of hash table TAB and return it.  When called as a
+     subroutine, the net result is therefore to delete the member from the
+     hash table.
+
+   SEE ALSO h_new, h_delete. */
+
+                                                                     h_save
+/* DOCUMENT tbl = h_save(var1, var2, ...);
+         or h_save, tbl, var1, var2, ...;
+
+     Save  variables VAR1,  VAR2, ...  into an  hash table.   When called  as a
+     function, the resulting  new hash table is returned by  the function; when
+     called as  a subroutine,  the first  argument, TBL, must  be a  hash table
+     whose contents gets updated.
+
+     The VARi arguments may be:
+
+      - a  simple variable  reference,  in  which case  the  name  of the  VARi
+        specifies the key in the hash table;
+
+      - a (KEY,VAL)  pair where  KEY is the  name of the  hash entry  (a scalar
+        string) and VAL is  the value of the hash entry; as  a special case, if
+
+                                                      FROM h_save TO h_stat
+
+        KEY is the  NULL string, string(0), the corresponding value  is used to
+        set the evaluator of the hash table;
+
+      - a keyword KEY=VAL;
+
+     Note that positional  arguments are processed in order,  and the keywords,
+     if any, are processed last; if multiple arguments are stored with the same
+     key, the  final value will  be the last  one (according to  the processing
+     order).
+
+
+   PERFORMANCES:
+     Currently,  this  function is  implemented  by  interpreted code.   It  is
+     however quite  fast: about  1.5 microseconds  to create  a table  with one
+     entry, plus about  0.6 microsecond per additional  entry.  For comparison,
+     it takes 0.3  microsecond to create a single entry  table with h_new() and
+     about  0.06  microsecond  per  additional entry.   All  these  times  were
+     measured on an Intel Core i7-870 at 2.93GHz.
+
+
+   SEE ALSO: h_new, h_evaluator, h_functor, save. */
+
+                                                             h_save_symbols
+/* DOCUMENT h_save_symbols(namelist, ...);
+         or h_save_symbols(flag);
+     Return hash table which references symbols given in NAMELIST or selected
+     by FLAG (see symbol_names).  Of course, the symbol names will be used as
+     member names in the result.
+
+   SEE ALSO h_new, h_restore_builtin, symbol_names. */
+
+                                                                      h_set
+/* DOCUMENT h_set, tab, key=value, ...;
+         or h_set, tab, "key", value, ...;
+     Stores VALUE in member KEY of hash table TAB.  There may be any number of
+     KEY-VALUE pairs.  If called as a function, the returned value is TAB.
+
+   SEE ALSO h_new, h_set_copy. */
+
+                                                                 h_set_copy
+/* DOCUMENT h_set_copy, tab, key, value, ...;
+     Set member KEY (a scalar string) of hash table TAB with VALUE.  Unlike
+     h_set, VALUE is duplicated if it is an array.  There may be any number of
+     KEY-VALUE pairs.
+
+   SEE ALSO h_copy, h_new, h_set. */
+
+                                                                     h_stat
+/* DOCUMENT h_stat(tab);
+     Returns an histogram of the slot occupation in hash table TAB.  The
+     result is a long integer vector with i-th value equal to the number of
+     slots with (i-1) items.  Note: efficient hash table should keep the
+     number of items per slot as low as possible.
+
+   SEE ALSO h_new. */
+
+                                          FROM heapsort TO is_sparse_matrix
+
+                                                                   heapsort
+/* DOCUMENT heapsort(a)
+         or heapsort, a;
+     When called as a function, returns a vector of numberof(A) longs
+     containing index values such that A(heapsort(A)) is a monotonically
+     increasing vector.  When called as a subroutine, performs in-place
+     sorting of elements of array A.  This function uses the heap-sort
+     algorithm which may be superior to the quicksort algorithm (for
+     instance for integer valued arrays).  Beware that headpsort(A) and
+     sort(A) differ for multidimensional arrays.
+
+   SEE ALSO: quick_select, sort. */
+
+                                                           install_encoding
+/* DOCUMENT install_encoding, file, encoding;
+     Set layout of  primitive data types for binary  stream FILE.  ENCODING
+     may be  one of the  names accepted by  get_encoding or an array  of 32
+     integers as explained in get_encoding documentation.
+
+    SEE ALSO: get_encoding, install_struct. */
+
+                                                           insure_temporary
+/* DOCUMENT insure_temporary, var1 [, var2, ...];
+     Insure that symbols VAR1 (VAR2 ...) are temporary variables referring to
+     arrays.  Useful prior to in-place operations to avoid side-effects for
+     caller.
+
+     The call:
+         insure_temporary, var;
+     has the same effect as:
+         var = unref(var);
+
+   SEE ALSO: eq_nocopy, nrefsof, swap, unref. */
+
+                                                                    is_hash
+/* DOCUMENT is_hash(object)
+     Returns 1, if OBJECT is a regular hash table; returns 2, if OBJECT is a
+     hash table with a specialized evaluator; returns 0, if OBJECT is not a
+     hash table.
+
+   SEE ALSO: h_new, h_evaluator,
+             is_array, is_func, is_integer, is_list, is_range, is_scalar,
+             is_stream, is_struct, is_void.
+ */
+
+                                                                   is_mvect
+     /* SEE mvect_create     */
+
+                                                           is_sparse_matrix
+/* DOCUMENT is_sparse_matrix(obj)
+ *   Returns true if OBJ is a sparse matrix object; false otherwise.
+ *
+ *  SEE ALSO: sparse_matrix.
+ */
+
+                                            FROM is_symlink TO make_dimlist
+
+                                                                 is_symlink
+     /* SEE symlink_to_variable     */
+
+                                                                   is_tuple
+     /* SEE tuple     */
+
+                                                                        key
+     /* SEE h_delete     */
+
+                                                                        key
+     /* SEE h_grow     */
+
+                                                           machine_constant
+     /* SEE DBL_EPSILON     */
+
+                                                               make_dimlist
+/* DOCUMENT make_dimlist(arg1, arg2, ...)
+         or make_dimlist, arg1, arg2, ...;
+
+     Concatenate all arguments as a single dimension list.  The function
+     form returns the resulting dimension list whereas the subroutine form
+     redefines the contents of its first argument which must be a simple
+     variable reference.  The resulting dimension list is always of the
+     form [NDIMS, DIM1, DIM2, ...].
+
+
+   EXAMPLES
+
+     In the following example, a first call to make_dimlist is needed to
+     make sure that input argument DIMS is a valid dimension list if there
+     are no other input arguments:
+
+         func foo(a, b, dims, ..)
+         {
+           // build up dimension list:
+           make_dimlist, dims;
+           while (more_args()) make_dimlist, dims, next_arg();
+           ...;
+         }
+
+     Here is an other example:
+
+         func foo(a, b, ..)
+         {
+           // build up dimension list:
+           dims = [0];
+           while (more_args()) make_dimlist, dims, next_arg();
+           ...;
+         }
+
+
+   SEE ALSO: array, build_dimlist.
+ */
+
+                                            FROM make_hermitian TO mem_base
+
+                                                             make_hermitian
+/* DOCUMENT zp = make_hermitian(z)
+         or make_hermitian, z;
+
+     Insure that complex array Z is hermitian (in the FFT sense).  The
+     resulting hermitian array ZP is such that:
+
+         ZP(kneg(k)) = conj(ZP(k))
+
+     where k is the index of a given FFT frequency U and kneg(k) is the
+     index of -U.  When called as a subroutine, the operation is made
+     in-place.  Input array Z must be complex.
+
+     The particular method used to apply the hermitian constraint can be
+     set by keyword METHOD.  Use METHOD = 0 or undefined to "copy" the
+     values:
+
+         ZP(k) = Z(k)
+         ZP(kneg(k)) = conj(Z(k))
+
+     for all indices k such that k < kneg(k) -- in words, the only relevant
+     values in input array Z are those which appear before their negative
+     frequency counterpart.  Use METHOD = 1 to average the values:
+
+         ZP(k) = (Z(k) + conj(Z(kneg(k))))/2
+         ZP(kneg(k)) = (conj(Z(k)) + Z(kneg(k)))/2
+
+     Finally, use METHOD = 2 to "sum" the values (useful to make a gradient
+     hermitian):
+
+         ZP(k) = Z(k) + conj(Z(kneg(k)))
+         ZP(kneg(k)) = conj(Z(k)) + Z(kneg(k))
+
+     Set keyword HALF true to indicate that only half the Fourier
+     frequencies are stored into Z.  This is for instance the case when
+     real FFTW is used.
+
+
+   SEE ALSO: fft, fftw.
+ */
+
+                                                                 make_range
+     /* SEE Y_MMMARK     */
+
+                                                                   mem_base
+/* DOCUMENT mem_base(array);
+         or mem_copy, address, expression;
+         or mem_peek(address, type, dimlist);
+     Hacker routines to read/write data at a given memory location.  These
+     routines allow the user to do _very_ nasty but sometimes needed things.
+     They do not provide the safety level of ususal Yorick routines, and must
+     therefore be used with extreme care (you've been warned).  In all these
+     routines, ADDRESS is either a long integer scalar or a scalar pointer
+     (e.g. &OBJECT).
+
+
+                                                  FROM mem_base TO mem_info
+
+     mem_base returns the address (as a long scalar) of the first element of
+              array object ARRAY.  You can use this function if you need to
+              add some offset to the address of an object, e.g. to reach some
+              particular element of an array or a structure.
+
+     mem_copy copy the contents of EXPRESSION at memory location ADDRESS.
+
+     mem_peek returns a new array of data type TYPE and dimension list DIMLIST
+              filled with memory contents starting at address ADDRESS.
+
+   EXAMPLE
+     The following statement converts the contents of complex array Z as an
+     array of doubles:
+       X = mem_peek(mem_base(Z), double, 2, dimsof(Z));
+     then:
+       X(1,..) is Z.re
+       X(2,..) is Z.im
+
+   SEE ALSO reshape, native_byte_order. */
+
+                                                                  mem_clear
+/* DOCUMENT mem_clear;
+         or mem_clear, minsize;
+         or mem_clear, minsize, flags;
+
+                  *** USE THIS FUNCTION WITH CARE ***
+
+     Clear (that is destroy) global symbols larger than MINSIZE bytes (default
+     1024 bytes).  Symbol names starting with an underscore are not destroyed.
+     Optional argument FLAGS (default 0) is a bitwise combination of the
+     following bits:
+
+        0x01 - quiet mode, do not even print the summary.
+        0x02 - verbose mode, print out the names of matched symbols.
+        0x04 - dry-run mode, the symbols are not really destroyed.
+
+     When called as a function, returns the number of bytes released.
+
+
+   SEE ALSO: symbol_def, symbol_info, symbol_names, fullsizeof.
+ */
+
+                                                                   mem_copy
+     /* SEE mem_base     */
+
+                                                                   mem_info
+/* DOCUMENT mem_info;
+         or mem_info, count;
+     Print out some information about memory occupation. If COUNT is
+     specified, the COUNT biggest (in bytes) symbols are listed (use
+     COUNT<0 to list all symbols sorted by size).  Only the memory used by
+     Yorick's array symbols (including array of pointers), lists and hash
+     tables is considered.
+
+   BUGS:
+
+                                            FROM mem_info TO morph_dilation
+
+     Symbols
+     which are aliases (e.g. by using eq_nocopy) may be considered several
+     times.
+
+   SEE ALSO:
+     symbol_def, symbol_info, symbol_names, mem_clear, fullsizeof.
+ */
+
+                                                                   mem_peek
+     /* SEE mem_base     */
+
+                                                                     member
+     /* SEE h_cleanup     */
+
+                                                                     member
+     /* SEE h_clone     */
+
+                                                              morph_closing
+/* DOCUMENT morph_closing(a, r);
+         or morph_opening(a, r);
+     Perform an image closing/opening of A by a structuring element R.  A
+     closing is a dilation followed by an erosion, whereas an opening is an
+     erosion followed by a dilation.  See morph_dilation for the meaning of
+     the arguments.
+
+   SEE ALSO: morph_dilation, morph_white_top_hat,
+             morph_black_top_hat. */
+
+                                                             morph_dilation
+/* DOCUMENT morph_dilation(a, r);
+         or morph_erosion(a, r);
+
+     These functions perform a dilation/erosion morpho-math operation onto
+     input array A which must have at most 3 dimensions.  A dilation (erosion)
+     operation replaces every voxel of A by the maximum (minimum) value found
+     in the voxel neighborhood as defined by the structuring element. Argument
+     R defines the structuring element as follows:
+
+      - If R is a scalar integer, then it is taken as the radius (in voxels)
+        of the structuring element.
+
+      - Otherwise, R gives the offsets of the structuring element relative to
+        the coordinates of the voxel of interest.  In that case, R must an
+        array of integers with last dimension equals to the number of
+        dimensions of A.  In other words, if A is a 3-D array, then the
+        offsets are:
+
+           DX = R(1,..)
+           DY = R(2,..)
+           DZ = R(3,..)
+
+        and the neighborhood of a voxel at (X,Y,Z) is defined as: (X + DX(I),
+        Y + DY(I), Z + DZ(i)) for i=1,...,numberof(DX).  Conversely, R = [DX,
+        DY, DZ].  Thanks to that definition, structuring element with
+        arbitrary shape and relative position can be used in morpho-math
+
+                                       FROM morph_dilation TO morph_erosion
+
+        operations.
+
+        For instance, the dilation of an image (a 2-D array) IMG by a 3-by-5
+        rectangular structuring element centered at the pixel of interest is
+        obtained by:
+
+           dx = indgen(-1:1);
+           dy = indgen(-2:2);
+           result =  morph_dilation(img, [dx, dy(-,)])
+
+
+   SEE ALSO: morph_closing, morph_opening, morph_white_top_hat,
+             morph_black_top_hat, morph_enhance.
+ */
+
+                                                              morph_enhance
+/* DOCUMENT morph_enhance(a, r);
+         or morph_enhance(a, r, s);
+
+     Perform noise reduction with edge preserving on array A.  The result is
+     obtained by rescaling the values in A in a non-linear way between the
+     local minimum and the local maximum.  Argument R defines the structuring
+     element for the local neighborhood.  Argument S is a shape factor for the
+     rescaling function which is a sigmoid function.  If S is given, it must
+     be a non-negative value, the larger is S, the steeper is the rescaling
+     function.  The shape factor should be larger than 3 or 5 to have a
+     noticeable effect.
+
+     If S is omitted, a step-like rescaling function is chosen: the output
+     elements are set to either the local minimum or the local maximum which
+     one is the closest.  This corresponds to the limit of very large shape
+     factors and implements the "toggle filter" proposed by Kramer & Bruckner
+     [1].
+
+     The morph_enhance() may be iterated to achieve deblurring of the input
+     array A (hundreds of iterations may be required).
+
+
+  REFERENCES
+     [1] H.P. Kramer & J.B. Bruckner, "iterations of a nonlinear
+         transformation for enhancement of digital images", Pattern
+         Recognition, vol. 7, pp. 53-58, 1975.
+
+
+  SEE ALSO: morph_erosion, morph_dilation.
+ */
+
+                                                              morph_erosion
+     /* SEE morph_dilation     */
+
+                                   FROM morph_white_top_hat TO mvect_create
+
+                                                        morph_white_top_hat
+/* DOCUMENT morph_white_top_hat(a, r);
+         or morph_white_top_hat(a, r, s);
+         or morph_black_top_hat(a, r);
+         or morph_black_top_hat(a, r, s);
+     Perform a summit/valley detection by applying a top-hat filter to
+     array A.  Argument R defines the structuring element for the feature
+     detection.  Optional argument gives the structuring element used to
+     apply a smoothing to A prior to the top-hat filter.  If R and S are
+     specified as the radii of the structuring elements, then S should be
+     smaller than R.  For instance:
+
+       morph_white_top_hat(bitmap, 3, 1)
+
+     may be used to detect text or lines in a bimap image.
+
+
+   SEE ALSO: morph_dilation, morph_closing, morph_enhance. */
+
+                                                              mvect_collect
+     /* SEE mvect_create     */
+
+                                                               mvect_create
+/* DOCUMENT vec = mvect_create(len);
+         or vec = mvect_collect(arg1, arg2, arg3, ...);
+         or old = mvect_store(vec, i, new);
+         or mvect_store, vec, i, obj;
+         or mvect_resize, vec, len;
+         or mvect_push, vec, arg1, arg2, arg3, ...;
+         or is_mvect(obj);
+
+      Management of mixed vectors which are vector-like objects but with
+      entries of any type (hence, "mixed").
+
+      `mvect_create(len)` yields a mixed vector with `len` entries (all
+      initially void).
+
+      `mvect_collect(arg1, arg2, arg3, ...)` build a new mixed vector with
+      entries `arg1`, `arg2`, `arg3`, ... Note that, due to Yorick's rules,
+      `mvect_collect()` does not yield an empty mixed vector but a mixed vector
+      with a single void entry. To create an empty mixed vector, do
+      `mvect_create(0)`.
+
+      `mvect_store(vec, i, new)` replaces `i`-th entry of mixed vector `vec` by
+      `new` and returns the entry previously stored there. Can be called as a
+      subroutine to directly discard the previously stored entry. Yorick's
+      indexing rules hold, that is `i = 0` corresponds to the last entry,
+      `i = -1` corresponds to the before last entry and so on.
+
+      `mvect_resize, vec, len;` resizes the mixed vector `vec` to store `len`
+      entries. New entries, if any, are initialized as void. When called as a
+      function, returns the mixed vector itself.
+
+      `mvect_push, vec, arg1, arg2, arg3, ...;` pushes entries `arg1`, `arg2`,
+      `arg3`, ... at the end of the mixed vector `vec` resizing it as needed.
+
+                                       FROM mvect_create TO name_of_symlink
+
+      When called as a function, returns the mixed vector itself.
+
+      `is_mvect(obj)` yields whether object `obj` is a mixed vector.
+
+      Usage:
+
+          obj = vec(i);      // yields i-th entry of mixed vector
+          old = vec(i, new); // shortcut for `mvect_store(vec, i, new)`
+          vec, i, obj;       // shortcut for `mvect_store, vec, i, obj;`
+          len = vec();       // yields the number of stored entries
+          len = vec.len;     // idem
+
+   SEE ALSO tuple.
+*/
+
+                                                                 mvect_push
+     /* SEE mvect_create     */
+
+                                                               mvect_resize
+     /* SEE mvect_create     */
+
+                                                                mvect_store
+     /* SEE mvect_create     */
+
+                                                                     mvmult
+/* DOCUMENT y = mvmult(a, x);
+         or y = mvmult(a, x, 0/1);
+
+     Returns the result of (generalized) matrix-vector multiplication of
+     vector X (a regular Yorick array) by matrix A (a regular Yorick array or
+     a sparse matrix).  The matrix-vector multiplication is performed as if
+     there is only one index running over the elements of X and the
+     trailing/leading dimensions of A.
+
+     If optional last argument is omitted or false, the summation index runs
+     across the trailing dimensions of A which must be the same as those of
+     X and the dimensions of the result are the remaining leading dimensions
+     of A.
+
+     If optional last argument is 1, the matrix operator is transposed: the
+     summation index runs across the leading dimensions of A which must be the
+     same as those of X and the dimensions of the result are the remaining
+     trailing dimensions of A.
+
+   SEE ALSO: sparse_matrix, sparse_squeeze.
+ */
+
+                                                            name_of_symlink
+     /* SEE symlink_to_variable     */
+
+                                     FROM native_byte_order TO quick_median
+
+                                                          native_byte_order
+/* DOCUMENT native_byte_order()
+         or native_byte_order(type)
+     Returns the native byte  order, one of: "LITTLE_ENDIAN", "BIG_ENDIAN",
+     or  "PDP_ENDIAN".  Optional  argument  TYPE is  an  integer data  type
+     (default is long).
+
+   SEE ALSO mem_peek. */
+
+                                                                    nrefsof
+/* DOCUMENT nrefsof(object)
+     Returns number of references on OBJECT.
+
+   SEE ALSO: unref. */
+
+                                                                parse_range
+     /* SEE Y_MMMARK     */
+
+                                                                    product
+/* DOCUMENT product(x);
+
+     Yield the product of the elements of X.  Result is a scalar of type
+     `long`, `double` or `complex` depending on the type of the elements of X
+     (integer, floating-point or complex).
+
+   SEE ALSO: sum.
+*/
+
+                                                  quick_interquartile_range
+/* DOCUMENT q = quick_quartile(a);
+         or iqr = quick_interquartile_range(a);
+
+     The function quick_quartile() returns the 3 quartiles of the values in
+     array A.
+
+     The function quick_interquartile_range() returns IQR = Q(3) - Q(1), the
+     interquartile range of values in array A.
+
+     Linear interpolation is used to estimate the value of A at fractional
+     orders.  Array A must have at least 3 elements.
+
+
+   SEE ALSO
+     quick_median, quick_select, insure_temporary.
+ */
+
+                                                               quick_median
+/* DOCUMENT quick_median(a)
+     Returns the median of values in array A.
+
+   SEE ALSO
+     median, quick_quartile, quick_select, insure_temporary.
+ */
+
+                                          FROM quick_select TO quick_select
+
+                                                               quick_select
+/* DOCUMENT quick_select(a, k [, first, last])
+         or quick_select, a, k [, first, last];
+
+     Find the K-th smallest element in array A.  When called as a function,
+     the value of the K-th smallest element in array A is returned.  When
+     called as a subroutine, the elements of A are re-ordered (in-place
+     operation) so that A(K) is the K-th smallest element in array A and
+     A(J) <= A(K) for J <= K and A(J) >= A(K) for J >= K.
+
+     Optional arguments FIRST and LAST can be used to specify the indices of
+     the first and/or last element of A to consider: elements before FIRST and
+     after LAST are ignored and left unchanged when called as a subroutine;
+     index K however always refers to the full range of A.  By default,
+     FIRST=1 and LAST=numberof(A).
+
+     Yorick indexing rules are supported for arguments K, FIRST and LAST
+     (i.e. 0 means last element, etc).
+
+
+   EXAMPLES
+
+     The index K which splits a sample of N=numberof(A) elements into
+     fractions ALPHA (strictly before K, that is K - 1 elements) and 1 - ALPHA
+     (strictly after K, that is N - K elements) is such that:
+
+         (1 - ALPHA)*(K - 1) = ALPHA*(N - K)
+
+     hence:
+
+         K = 1 + ALPHA*(N - 1)
+
+     Accounting for rounding to nearest integer, this leads to compute the
+     value at the boundary of the split as:
+
+         q(ALPHA) = quick_select(A, long(1.5 + ALPHA*(numberof(A) - 1)))
+
+     Therefore the first inter-quartile split is at (1-based and rounded
+     to the nearest integer) index:
+
+         K1 = (N + 5)/4     (with integer division)
+
+     the second inter-quartile (median) is at:
+
+         K2 = N/2 + 1       (with integer division)
+
+     the third inter-quartile is at:
+
+         K3 = (3*N + 3)/4   (with integer division)
+
+
+   SEE ALSO: quick_median, quick_quartile, sort, heapsort.
+ */
+
+                              FROM rgl_roughness_cauchy TO rgl_roughness_l2
+
+                                                       rgl_roughness_cauchy
+     /* SEE rgl_roughness_l2     */
+
+                                              rgl_roughness_cauchy_periodic
+     /* SEE rgl_roughness_l2     */
+
+                                                           rgl_roughness_l1
+     /* SEE rgl_roughness_l2     */
+
+                                                  rgl_roughness_l1_periodic
+     /* SEE rgl_roughness_l2     */
+
+                                                           rgl_roughness_l2
+/* DOCUMENT err = rgl_roughness_SUFFIX(hyper, offset, arr);
+         or err = rgl_roughness_SUFFIX(hyper, offset, arr, grd);
+
+     Compute regularization penalty based on the roughness of array ARR.
+     SUFFIX indicates the type of cost function and the boundary condition
+     (see below).  HYPER is the array of hyper-parameters; depending on the
+     particular cost function, HYPER may have 1 or 2 elements (see below).
+     OFFSET is an array of offsets for each dimensions of ARR (missing offsets
+     are treated as being equal to zero): OFFSET(j) is the offset along j-th
+     dimension between elements to compare. The penalty is equal to the sum of
+     the costs of the differences between values of ARR separated by OFFSET;
+     schematically:
+
+        ERR = sum_k  COST(ARR(k + OFFSET) - ARR(k))
+
+     The following penalties are implemented:
+
+        rgl_roughness_l1		L1 norm
+        rgl_roughness_l1_periodic	L1 norm, periodic
+        rgl_roughness_l2		L2 norm
+        rgl_roughness_l2_periodic	L2 norm, periodic
+        rgl_roughness_l2l1		L2-L1 norm
+        rgl_roughness_l2l1_periodic	L2-L1 norm, periodic
+        rgl_roughness_l2l0		L2-L0 norm
+        rgl_roughness_l2l0_periodic	L2-L0 norm, periodic
+        rgl_roughness_cauchy		Cauchy norm
+        rgl_roughness_cauchy_periodic	Cauchy norm, periodic
+
+     The suffix "periodic" indicates periodic boundary condition.  The
+     different cost functions are):
+
+        L1(x)	  = mu * abs(x)
+        L2(x)	  = mu * x^2
+        L2L0(x)	  = mu * eps^2 * atan(x/eps))^2
+        L2L1(x)	  = 2 * mu * eps^2 * (abs(x/eps) - log(1 + abs(x/eps)))
+        Cauchy(x) = mu * eps^2 * log(1 + (x/eps)^2)
+
+     where X = ARR(k + OFFSET) - ARR(k), MU = HYPER(1) is the weight of the
+     regularization and EPS = HYPER(2) is a threshold level.  Restrictions:
+     MU >= 0 and EPS >= 0 and the result is ERR = 0 when MU = 0 or EPS = 0
+     -- the case EPS = 0, is implemented by continuity.
+
+
+                       FROM rgl_roughness_l2 TO rgl_roughness_l2l0_periodic
+
+     The L2-L0, L2-L1 and Cauchy cost functions behave as L2(X) = MU*X^2 for
+     abs(X) much smaller than EPS.  They differ in their tail for large
+     values of abs(X): L2-L0 tends to be flat; L2-L1 behave as abs(X) and
+     CAUCHY is intermediate.
+
+     From a Baysian viewpoint, L2 correspond to the neg-log likelihood of a
+     Gaussian distribution, CAUCHY correspond to the neg-log likelihood of a
+     Cauchy (or Lorentzian) distribution.
+
+     Optional argument GRD must be an unadorned variable where to store the
+     gradient. If the argument GRD is omitted, no gradient is computed. On
+     entry, the value of GRD may be empty to automatically or an array
+     (convertible to real type) with same dimension list as ARR.  In the first
+     case, a new array is created to store the gradient; in the second case,
+     the contents of GRD is augmented by the gradient (and GRD is converted to
+     "double" if it is not yet the case).
+
+
+   EXAMPLES
+
+     To compute isotropic quadratic roughness along 2 first dimensions of A:
+
+         g = array(double, dimsof(a)); // to store the gradient
+         mu = 1e3; // regularization weight
+         rgl = rgl_roughness_l2; // shortcut
+         f = (rgl(    mu,   1,	   a, g) +
+              rgl(    mu, [ 0, 1], a, g) +
+              rgl(0.5*mu, [-1, 1], a, g) +
+              rgl(0.5*mu, [ 1, 1], a, g));
+
+     To compute anisotropic roughness along first and third dimensions of A:
+
+         g = array(double, dimsof(a)); // to store the gradient
+         mu1 = 1e3; // regularization weight along first dimension
+         mu2 = 3e4; // regularization weight along second dimension
+         rgl = rgl_roughness_l2; // shortcut
+         f = (rgl(mu1,	       1,	 a, g) +  // 1st dim
+              rgl(mu3,	     [ 0, 0, 1], a, g) +  // 3rd dim
+              rgl(mu1 + mu3, [-1, 0, 1], a, g) +  // 1st & 3rd dim
+              rgl(mu1 + mu3, [ 1, 0, 1], a, g));  // 1st & 3rd dim
+
+
+   SEE ALSO
+     cost_l2.
+ */
+
+                                                  rgl_roughness_l2_periodic
+     /* SEE rgl_roughness_l2     */
+
+                                                         rgl_roughness_l2l0
+     /* SEE rgl_roughness_l2     */
+
+                                                rgl_roughness_l2l0_periodic
+     /* SEE rgl_roughness_l2     */
+
+                                            FROM rgl_roughness_l2l1 TO sinc
+
+                                                         rgl_roughness_l2l1
+     /* SEE rgl_roughness_l2     */
+
+                                                rgl_roughness_l2l1_periodic
+     /* SEE rgl_roughness_l2     */
+
+                                                              same_encoding
+/* DOCUMENT same_encoding(a, b)
+     Compare primitives  A and B  which must be conformable  integer arrays
+     with first dimension equals to 32 (see set_primitives).  The result is
+     an array  of int's with one  less dimension than A-B  (the first one).
+     Some checking is  performed for the operands.  The  byte order for the
+     char data type is ignored in the comparison.
+
+   SEE ALSO install_encoding, get_encoding.*/
+
+                                                              setup_package
+/* DOCUMENT PACKAGE_HOME = setup_package();
+         or PACKAGE_HOME = setup_package(plugname);
+
+     The setup_package function must be directly called in a Yorick source
+     file, the so-called Yorick package source file.  This function determines
+     the package directory which is the absolute directory name of the package
+     source file and setup Yorick search paths to include this directory.  The
+     returned value is the package directory (guaranteed to be terminated by a
+     slash "/").
+
+     If PLUGNAME is specified, the corresponding plugin is loaded
+     (preferentially from the package directory).
+
+
+   SEE ALSO: plug_in, plug_dir, current_include, get_path, set_path.
+ */
+
+                                                                       sinc
+/* DOCUMENT sinc(x);
+     Returns the "sampling function" of X as defined by Woodward (1953) and
+     Bracewell (1999):
+
+       sinc(x) = 1                 for x=0
+                 sin(PI*x)/(PI*x)  otherwise
+
+     Note: This definition correspond to the "normalized sinc function";
+     some other authors may define the sampling function without the PI
+     factors in the above expression.
+
+
+   REFERENCES
+     Bracewell, R. "The Filtering  or Interpolating Function, sinc(x)."  In
+     "The  Fourier Transform  and  Its Applications",  3rd  ed.  New  York:
+     McGraw-Hill, pp. 62-64, 1999.
+
+                                                       FROM sinc TO smooth3
+
+
+     Woodward, P.  M. "Probability and Information Theory with Applications
+     to Radar". New York: McGraw-Hill, 1953.
+
+  SEE ALSO: sin. */
+
+                                                                    smooth3
+/* DOCUMENT smooth3(a)
+     Returns array A smoothed by a simple 3-element convolution (but for
+     the edges).  In one dimension, the smoothing operation reads:
+        smooth3(A)(i) = C*A(i) + D*(A(i-1) + A(i+1))
+     but for the first and last element for which:
+        smooth3(A)(1) = E*A(1) + D*A(2)
+        smooth3(A)(n) = E*A(n) + D*A(n-1)
+     where N is the length of the dimension and the coefficients are:
+        C = 0.5
+        D = 0.25
+        E = 0.75
+     With the default value of C (see keyword C below), the smoothing
+     operation is identical to:
+
+        smooth3(A) = A(pcen)(zcen)             for a 1D array
+        smooth3(A) = A(pcen,pcen)(zcen,zcen)   for a 2D array
+        ...                                    and so on
+
+     Keyword C can be used to specify another value for the coefficient
+     C (default: C=0.5); coefficients D and E are computed as follows:
+        D = 0.5*(1 - C)
+        E = 0.5*(1 + C)
+
+     The default is to smooth A along all its dimensions, but keyword WHICH
+     can be used to specify the only dimension to smooth.  If WHICH is less
+     or equal zero, then the smoothed dimension is the last one + WHICH.
+
+     The smoothing operator implemented by smooth3 has the following
+     properties:
+
+     1. The smoothing operator is linear and symmetric (for any number of
+        dimensions in A).  The symmetry of the smoothing operator is
+        important for the computation of gradients in regularization.  For
+        instance, let Y = smooth3(X) and Q be a scalar function of Y, then
+        then the gradient of Q with respect to X is simply:
+           DQ_DX = smooth3(DQ_DY)
+        where DQ_DY is the gradient of Q with respect to Y.
+
+     2. For a vector, A, smooth3(A)=S(,+)*A(+) where the matrix S is
+        tridiagonal:
+
+           [E D         ]
+           [D C D       ]
+           [  D C D     ]
+           [   \ \ \    ]    where, to improve readability,
+           [    \ \ \   ]    missing values are all zero.
+           [     D C D  ]
+           [       D C D]
+
+                                              FROM smooth3 TO sparse_matrix
+
+           [         D E]
+
+        You can, in principle, reverse the smoothing operation with TDsolve
+        along each dimensions of smooth3(A).  Note: for a vector A, the
+        operator S-I applied to A (where I is the identity matrix) is the
+        finite difference 2nd derivatives of A (but for the edges).
+
+     3. The definition of coefficients C, D and E insure that the smoothing
+        operator does not change the sum of the element values of its
+        argument, i.e.: sum(smooth3(A)) = sum(A).
+
+     4. Only an array with all elements having the same value is invariant
+        by the smoothing operator.  In fact "slopes" along dimensions of A
+        are almost invariant, only the values along the edges are changed.
+
+
+   KEYWORDS: c, which.
+
+   SEE ALSO: TDsolve. */
+
+                                                              sparse_expand
+/* DOCUMENT a = sparse_expand(s);
+     Convert sparse matrix S into standard Yorick's array A.
+
+   SEE ALSO: sparse_squeeze, histogram.
+ */
+
+                                                                sparse_grow
+/* DOCUMENT sparse_grow(s, coefs, row_indices, col_indices);
+     Returns a sparse matrix object obtained by growing the non-zero
+     coefficients of S by COEFS with the corresponding row/column indices
+     given by ROW_INDICES and COL_INDICES which must have the same number of
+     elements as COEFS.
+
+    SEE ALSO: sparse_matrix.
+ */
+
+                                                              sparse_matrix
+/* DOCUMENT s = sparse_matrix(coefs, row_dimlist, row_indices,
+                                     col_dimlist, col_indices);
+
+     Returns a sparse matrix object.  COEFS is an array with the non-zero
+     coefficients of the full matrix.  ROW_DIMLIST and COL_DIMLIST are the
+     dimension lists of the matrix 'rows' and 'columns'.  ROW_INDICES and
+     COL_INDICES are the 'row' and 'column' indices of the non-zero
+     coefficients of the full matrix.
+
+     The sparse matrix object S can be used to perform sparse matrix
+     multiplication as follows:
+
+       S(x) or S(x, 0) yields the result of matrix multiplication of 'vector'
+               X by S; X must be an array with dimension list COL_DIMLIST (or
+               a vector with as many elements as an array with such a
+               dimension list); the result is an array with dimension list
+               ROW_DIMLIST.
+
+                                      FROM sparse_matrix TO symlink_to_name
+
+
+       S(y, 1) yields the result of matrix multiplication of 'vector' Y by the
+               transpose of S; Y must be an array with dimension list
+               ROW_DIMLIST (or a vector with as many elements as an array with
+               such a dimension list); the result is an array with dimension
+               list COL_DIMLIST.
+
+      The contents of the sparse matrix object S can be queried as with a
+      regular Yorick structure: S.coefs, S.row_dimlist, S.row_indices,
+      S.col_dimlist or S.col_indices are valid expressions if S is a sparse
+      matrix.
+
+
+    SEE ALSO: is_sparse_matrix, mvmult,
+              sparse_expand, sparse_squeeze, sparse_grow.
+ */
+
+                                                             sparse_restore
+/* DOCUMENT sparse_save, pdb, obj;
+         or sparse_restore(pdb);
+     The subroutine sparse_save saves the sparse matrix OBJ into file PDB.
+     The function sparse_restore restores the sparse matrix saved into file
+     PDB.  PDB is either a file name or a PDB file handle.
+
+   SEE ALSO: createb, openb, restore, save, sparse_matrix.
+ */
+
+                                                                sparse_save
+     /* SEE sparse_restore     */
+
+                                                             sparse_squeeze
+/* DOCUMENT s = sparse_squeeze(a);
+         or s = sparse_squeeze(a, n);
+     Convert array A into its sparse matrix representation.  Optional argument
+     N (default, N=1) is the number of dimensions of the input space.  The
+     dimension list of the input space are the N trailing dimensions of A and,
+     assuming that A has NDIMS dimensions, the dimension list of the output
+     space are the NDIMS - N leading dimensions of A.
+
+   SEE ALSO: sparse_matrix, sparse_expand.
+ */
+
+                                                                symbol_info
+/* DOCUMENT symbol_info, flags;
+         or symbol_info, names;
+         or symbol_info;
+     Print out some information about  Yorick's symbols.  FLAGS is a scalar
+     integer used to select symbol types (as in symbol_names).  NAMES is an
+     array  of symbol  names.  If  argument  is omitted  or undefined,  all
+     defined array symbols get selected (as with FLAGS=3).
+
+   SEE ALSO: info, mem_info, symbol_def, symbol_names.*/
+
+                                                            symlink_to_name
+     /* SEE symlink_to_variable     */
+
+                            FROM symlink_to_variable TO symlink_to_variable
+
+                                                        symlink_to_variable
+/* DOCUMENT lnk = symlink_to_variable(var)
+         or lnk = symlink_to_name(varname)
+         or is_symlink(lnk)
+         or name_of_symlink(lnk)
+         or value_of_symlink(lnk)
+
+     The call symlink_to_variable(var) creates a symbolic link to variable
+     VAR.  The call symlink_to_name(varname) creates a symbolic link to
+     variable whose name is VARNAME.  When the link object LNK is used in an
+     'eval' context or a 'get member' context (see examples below), LNK gets
+     replaced 'on the fly' by the symbol which is actually stored into the
+     corresponding Yorick's variable.  Therefore LNK adds no additional
+     reference to the variable which only has to exist when LNK is later used.
+     This functionality can be used to implement 'virtual' methods for
+     pseudo-object in Yorick (using hash tables).
+
+     For instance:
+
+        > lnk = symlink_to_variable(foo);  // variable foo does not yet exists
+        > lnk = symlink_to_name("foo");    // same link, using a name
+        > func foo(x) { return 2*x; }
+        > lnk(9)
+         18
+        > func foo(x) { return 3*x; }
+        > lnk(9)
+         27
+
+        > z = array(complex, 10, 4);
+        > lnk = symlink_to_variable(z);
+        > info, lnk.re;
+         array(double,10,4)
+
+     The function is_symlink(LNK) check whether LNK is a symbolic link.
+
+     The function name_of_symlink(LNK) returns the name of the variable linked
+     by LNK.
+
+     The function value_of_symlink(LNK) returns the actual value of the
+     variable corresponding to the symbolic link LNK.  This function can be
+     used to force the substitution in a context where it is not automatically
+     done.  For instance:
+
+       > lnk = symlink_to_variable(a);
+       > a = random(10);
+       > avg(lnk)
+       ERROR (*main*) avg requires numeric argument
+       > avg(value_of_symlink(lnk))
+       0.383679
+       > avg(a)
+       0.383679
+
+
+   SEE ALSO: h_new.
+ */
+
+                                                FROM tuple TO yeti_convolve
+
+                                                                      tuple
+/* DOCUMENT tup = tuple(arg1, arg2, ...);
+         or tup = empty_tuple();
+         or is_tuple(obj);
+
+     Tuples may be used to get around the limitation that Yorick functions can
+     only return a single value.
+
+     `tuple(arg1, arg2, ...)` yields a lightweight tuple-like object collecting
+     `arg1`, `arg2`, ...
+
+     `empty_tuple()` yields a tuple with no entries. This circumvents the fact
+     that, due to Yorick's rules, `tuple()` yields a tuple with a single void
+     entry.
+
+     `is_tuple(obj)` yields whether object `obj` is a tuple.
+
+     A tuple, say `tup`, can be indexed to retrieve the different entries:
+
+         tup(i)  // yields i-th entry using Yorick's indexing rules;
+         tup()   // yields the number of entries.
+         tup.len // idem
+
+   SEE ALSO mvect_create, _lst.
+*/
+
+                                                                    typemax
+     /* SEE typemin     */
+
+                                                                    typemin
+/* DOCUMENT typemin(T);
+         or typemax(T);
+
+     These functions yield the maximum/minimum value of integer or
+     floating-point type T.
+
+   SEE ALSO: sizeof.
+ */
+
+                                                                      value
+     /* SEE h_grow     */
+
+                                                           value_of_symlink
+     /* SEE symlink_to_variable     */
+
+                                                              yeti_convolve
+/* DOCUMENT ap = yeti_convolve(a)
+     Convolve  array A along  its dimensions  (all by  default) by  a given
+     kernel.  By default, the convolution kernel is [1,4,6,4,1]/16.0.  This
+     can be  changed by using keyword  KERNEL (but the kernel  must have an
+     odd number  of elements).  The following operation  is performed (with
+     special  handling for the  boundaries, see  keyword BORDER)  along the
+     direction(s) of interest:
+     |         ____
+     |         \
+
+                                            FROM yeti_convolve TO yeti_init
+
+     |   AP(i)= \ KERNEL(j+W) * A(i + j*SCALE)
+     |          /
+     |         /___
+     |     -W <= j <= +W
+     |
+     where  numberof(KERNEL)=2*W+1.  Except  for  the SCALE  factor, AP  is
+     mostly  a convolution  of A  by array  KERNEL along  the  direction of
+     interest.
+
+     Keyword WHICH can be used  to specify the dimension(s) of interest; by
+     default, all  dimensions get convolved.   As for indices,  elements in
+     WHICH less than  1 is taken as relative to the  final dimension of the
+     array.  You may specify  repeated convolution along some dimensions by
+     using them several times in array WHICH (see keyword COUNT).
+
+     Keyword BORDER can be used to set the handling of boundary conditions:
+       BORDER=0  Extrapolate  missing  values  by  the left/rightmost  ones
+                 (this is the default behaviour).
+       BORDER=1  Extrapolate missing left  values by zero and missing right
+                 values by the rightmost one.
+       BORDER=2  Extrapolate  missing left  values by the  leftmost one and
+                 missing right values by zero.
+       BORDER=3  Extrapolate missing left/right values by zero.
+       BORDER=4  Use periodic conditions.
+       BORDER>4 or BORDER<0
+                 Do   not   extrapolate   missing  values   but   normalize
+                 convolution product  by sum  of kernel weights  taken into
+                 account (assuming they are all positive).
+
+     By  default, SCALE=1 which  corresponds to  a simple  convolution.  An
+     other value can be used thanks  to keyword SCALE (e.g. for the wavelet
+     "a trou" method).  The value of SCALE must be a positive integer.
+
+     Keyword COUNT  can be used to  augment the amount  of smoothing: COUNT
+     (default COUNT=1) is  the number of convolution passes.   It is better
+     (i.e. faster) to use only one pass with appropriate convolution kernel
+     (see keyword KERNEL).
+
+  SEE ALSO yeti_wavelet.
+
+  RESTRICTIONS
+    1. Should use the in-place ability of the operation to limit the number
+       of array copies.
+    2. Complex convolution not yet  implemented (although it exists in the
+       C-code). */
+
+                                                                  yeti_init
+     /* SEE YETI_HOME     */
+
+                                          FROM yeti_wavelet TO yeti_wavelet
+
+                                                               yeti_wavelet
+/* DOCUMENT cube = yeti_wavelet(a, order)
+     Compute the "a trou" wavelet transform of A.  The result is such
+     that:
+       CUBE(.., i) = S_i - S_(i+1)
+     where:
+       S_1 = A
+       S_(i+1) = yeti_convolve(S_i, SCALE=2^(i-1))
+     As a consequence:
+       CUBE(..,sum) = A;
+
+  SEE ALSO yeti_convolve. */

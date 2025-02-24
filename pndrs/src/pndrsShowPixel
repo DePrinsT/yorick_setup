@@ -1,0 +1,70 @@
+
+/* Load pndrs */
+include,"pndrs.i";
+yocoErrorSet,0;
+batch,0;
+
+write,1;
+
+/* Process arguments */
+argv = get_argv();
+
+if( anyof(argv=="-o") ) overwrite=1;
+
+id=where(argv=="-f")
+if ( is_array(id) && id(1)!=numberof(argv) )
+{
+    inputScienceFile = argv(id(1)+1);
+}
+
+pndrsBatchMakeSilentGraphics, 2;
+pndrsCheckFile, inputScienceFile,2,[1],"inputFile";
+pndrsBatchMakeSilentGraphics, 1;
+
+pndrsReadRawFiles, inputScienceFile, imgData, imgLog;
+pndrsProcessDetector, imgData, imgLog;
+pndrsReformData, imgData, imgLog, useDarkWin=0;
+
+inputScienceFile = imgLog(1).fileName;
+data  = *imgData(1).regdata;
+nscan = dimsof(data)(4);
+
+
+data -= data(,avg,avg,)(,-,-,);
+psd   = ( abs( fft(data,[0,1,0,0]) )^2 )(,,avg,);
+
+/* 20 first scans only */
+data  = data(,,1:min(20,nscan),)(,*,);
+
+/* Compute a runnning average */
+dats  = data(,pcen,)(,zcen,)(,pcen,)(,zcen,)(,pcen,)(,zcen,)(,pcen,)(,zcen,)(,pcen,)(,zcen,)(,pcen,)(,zcen,)(,pcen,)(,zcen,)(,pcen,)(,zcen,)(,pcen,)(,zcen,)(,pcen,)(,zcen,)(,pcen,)(,zcen,)(,pcen,)(,zcen,);
+
+nc = dimsof(data)(2);
+nwin = dimsof(data)(0);
+
+/* Make plots */
+for (i=1;i<=nc;i++) {
+  winkill,1;
+  yocoNmCreate,1,nwin,dy=0.005,dx=0.05;
+  yocoPlotPlgMulti,data(i,,), tosys=indgen(nwin);
+  yocoPlotPlgMulti,dats(i,,), tosys=indgen(nwin),color="red";
+  yocoNmRange,-120,120;
+  str = yocoFileSplitName( inputScienceFile ) + "_pixelLevelIdc"+swrite(format="%02d",i)+".pdf";
+  write,str;
+  pndrsSavePdf,1,str;
+}
+
+for (i=1;i<=nc;i++) {
+  winkill,2; fma;
+  yocoNmCreate,2,nwin,dy=0.005,dx=0.05;
+  yocoPlotPlgMulti,psd(i,,), tosys=indgen(nwin);
+  //  yocoPlotPlgMulti,dats(i,,), tosys=indgen(nwin),color="red";
+  //  yocoNmRange,-120,120;
+  yocoNmLogxy,0,1;
+  yocoNmLimits,0,256,1e4,1e6;
+  str = yocoFileSplitName( inputScienceFile ) + "_pixelPslIdc"+swrite(format="%02d",i)+".pdf";
+  write,str;
+  pndrsSavePdf,2,str;
+ }
+
+quit;

@@ -1,0 +1,52 @@
+#! /bin/sh
+#
+# This script executes MiRA via the parser in file "mira2_batch.i".
+#
+#------------------------------------------------------------------------------
+#
+# This file is part of MiRA: a Multi-aperture Image Reconstruction
+# Algorithm <https://github.com/emmt/MiRA>.
+#
+# Copyright (C) 2016-2018, Éric Thiébaut.
+#
+# MiRA is free software; you can redistribute it and/or modify it under the
+# terms of the GNU General Public License version 2 as published by the Free
+# Software Foundation.
+#
+# MiRA is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+#------------------------------------------------------------------------------
+
+# The following variables may be customized, SRCDIR is the directory with
+# MiRA code source and YORICK is the path for Yorick interpreter.
+SRCDIR=${MIRA_SRCDIR:-/home/toond/software/yorick/yorick/i}
+YORICK=${MIRA_YORICK:-/home/toond/software/yorick/yorick/bin/yorick}
+
+# If SRCDIR is not specified, use the directory of this script or Y_SITE.
+if test "x$SRCDIR" = "x"
+then
+    dir=$(dirname "$0")
+    SRCDIR=$dir/../src
+    if ! test -r "${SRCDIR}/mira2_batch.i"
+    then
+        Y_SITE=$(echo 'write, format="@Y_SITE@%s@\n", Y_SITE; quit;' \
+                     | "$YORICK" \
+                     | sed -e '/^@Y_SITE@.*@$/!d;s/^@Y_SITE@\(.*\)@$/\1/')
+        SRCDIR=$Y_SITE/i
+    fi
+fi
+if ! test -r "${SRCDIR}/mira2_batch.i"
+then
+    exe=$(basename "$0")
+    echo 1>&2 "$exe: File mira2_batch.i not found."
+    echo 1>&2 "       MiRA may not be properly installed or try setting"
+    echo 1>&2 "       environment variable MIRA_SRCDIR with the correct"
+    echo 1>&2 "       directory."
+    exit 1
+fi
+
+# Run the MiRA batch script.
+exec "$YORICK" -batch "${SRCDIR}/mira2_batch.i" "$@"

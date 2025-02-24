@@ -1,0 +1,36 @@
+#! /home/toond/software/yorick/yorick/bin/yorick -batch
+
+/* Load pndrs */
+include,"pndrs.i";
+pndrsBatchMakeSilentGraphics, 1;
+yocoErrorSet,0;
+batch,0;
+
+/* Process arguments */
+argv = get_argv();
+
+/* Define loglevel */
+pndrsArgvSetLogLevel, argv;
+
+flag = char(0);
+if (anyof(argv=="-flag")) flag=char(1);
+if (anyof(argv=="-unflag")) flag=char(0);
+
+file = argv(0);
+
+yocoLogInfo,"Open file:",file;
+fh = cfitsio_open(file,"a");
+cfitsio_goto_hdu,fh,1;
+
+flag0 = cfitsio_get(fh,"HIERARCH ESO QC QUALITY FLAG",default=char(0));
+yocoLogInfo,"QC QUALITY FLAG is "+["T","F"]((flag0==0)+1);
+
+yocoLogInfo,"QC QUALITY FLAG set to "+["T","F"]((flag==0)+1);
+cfitsio_set,fh,"HIERARCH ESO QC QUALITY FLAG",flag;
+
+yocoLogInfo,"Close file";
+cfitsio_close,fh;
+
+remove,"pnlog.fits";
+
+quit;

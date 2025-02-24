@@ -1,0 +1,49 @@
+#! /home/toond/software/yorick/yorick/bin/yorick -batch
+
+/* Load pndrs */
+include,"pndrs.i";
+pndrsBatchMakeSilentGraphics, 1;
+yocoErrorSet,0;
+batch,0;
+
+/* Process arguments */
+argv = get_argv();
+
+/* Define loglevel */
+pndrsArgvSetLogLevel, argv;
+
+/* Get options */
+noReduce = noSpecCal = overwrite = mode = [];
+if (anyof(argv=="-test") ) pndrsVersion = "t"+pndrsVersion
+if( anyof(argv=="-reduce") ) reduce=1;
+
+/* Check date (default is the name of current dir) */
+fullpath = pndrsGetArgument(argv, "--date=", default=get_cwd());
+
+/* Get the date and setup the log for this download */
+date = yocoStrrtok(fullpath, "/")(2);
+yocoLogSetFile,date+"_dlog.txt", overwrite=1;
+
+/* Search for the data for this night in the ESO archive */
+datasetId = pndrsArchiveGetSaf(date);
+
+/* If no data for this date, just stop */
+if (numberof(datasetId)<1) {
+  yocoLogInfo,"No data for date "+date+", stop.";
+  quit;
+ }
+
+/* Go into the directory, build it if needed */
+mkdirp, fullpath;
+cd, fullpath;
+
+/* Get the files, this will check if existing */
+pndrsArchiveGetFilesFromSaf, datasetId;
+
+/* Eventually reduce and calibrate the data */
+if (reduce) {
+  system,"pndrsReduce -calibrate &";
+}
+
+/* quit */
+quit;

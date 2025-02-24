@@ -1,0 +1,76 @@
+/*
+ * config.h -
+ *
+ * Configuration settings for compiling Yeti and others Yorick extensions.
+ *
+ *-----------------------------------------------------------------------------
+ *
+ * This file is part of Yeti (https://github.com/emmt/Yeti) released under the
+ * MIT "Expat" license.
+ *
+ * Copyright (C) 1996-2020: Éric Thiébaut.
+ *
+ *-----------------------------------------------------------------------------
+ */
+
+#ifndef _YETI_CONFIG_H
+#define _YETI_CONFIG_H 1
+
+/*---------------------------------------------------------------------------*/
+/* Yorick version numbers: */
+#define YORICK_VERSION_MAJOR x
+#define YORICK_VERSION_MINOR x
+#define YORICK_VERSION_MICRO x
+#define YORICK_VERSION_SUFFIX ""
+
+/* Yeti version numbers: */
+#define YETI_VERSION_MAJOR x
+#define YETI_VERSION_MINOR x
+#define YETI_VERSION_MICRO x
+#define YETI_VERSION_SUFFIX ""
+
+/* Define the following macro to true if Yorick does not export
+   the definitions of autoload_t structure: */
+#define YETI_MUST_DEFINE_AUTOLOAD_TYPE x
+
+/*---------------------------------------------------------------------------*/
+/* Byte order (+1 for big endian, -1 for little endian). */
+#define YETI_BYTE_ORDER x
+
+/* Size (in bytes) of basic C-types. */
+#define YETI_CHAR_SIZE x
+#define YETI_SHORT_SIZE x
+#define YETI_INT_SIZE x
+#define YETI_LONG_SIZE x
+#define YETI_FLOAT_SIZE x
+#define YETI_DOUBLE_SIZE x
+#define YETI_POINTER_SIZE x
+
+/*---------------------------------------------------------------------------*/
+/* Unfortunately the code interface to Yorick change with the version and
+   none of the Yorick headers provide this information.  The following
+   defintions attempt to provide a more uniform interface. */
+
+#undef p_strfree
+#if (YORICK_VERSION_MAJOR == 1 && YORICK_VERSION_MINOR == 4)
+# include "defstr.h"
+# define p_malloc   Ymalloc  /* usage: p_malloc(SIZE)        */
+# define p_realloc  Yrealloc /* usage: p_realloc(ADDR, SIZE) */
+# define p_free     Yfree    /* usage: p_free(ADDR)          */
+# define p_strcpy   StrCpy   /* usage: p_strcpy(STR) -- also see yeti_strcpy */
+# define p_strfree  StrFree  /* usage: p_strfree(STR) */
+# define p_stralloc StrAlloc /* usage: p_stralloc(LEN) */
+#endif /* Yorick 1.4 */
+
+#if ((YORICK_VERSION_MAJOR == 1 && YORICK_VERSION_MINOR >= 5) || YORICK_VERSION_MAJOR >= 2)
+# include "pstdlib.h"
+# define p_strfree       p_free            /* usage: p_strfree(STR) */
+# define p_stralloc(LEN) p_malloc((LEN)+1) /* usage: p_stralloc(LEN) */
+#endif /* Yorick 1.5 and newer */
+
+#ifndef p_stralloc
+# error "unsupported Yorick version"
+#endif
+
+/*---------------------------------------------------------------------------*/
+#endif /* _YETI_CONFIG_H */

@@ -1,0 +1,8 @@
+To get the full documentation of the available yorick functions in
+yoco, first install yorick and the yoco plugin. Then go to the
+directory yoco/doc and type the following command:
+
+yorick -batch generateAllDocs.i
+
+You should get then text files with suffix .txt that you can read with
+any text editor and tex files that can be compiled using latex.

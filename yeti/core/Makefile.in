@@ -1,0 +1,121 @@
+# Where are the sources?
+srcdir=.
+
+# These values filled in by `yorick -batch make.i` or `configure` script.
+Y_MAKEDIR=
+Y_EXE=
+Y_EXE_PKGS=
+Y_EXE_HOME=
+Y_EXE_SITE=
+Y_HOME_PKG=
+
+#----------------------------------------------------------- optimization flags
+
+# options for make command line, e.g.-   make COPT=-g TGT=exe
+COPT=$(COPT_DEFAULT)
+TGT=$(DEFAULT_TGT)
+
+#------------------------------------------------------ macros for this package
+
+PKG_NAME=yeti
+PKG_I=$(srcdir)/yeti.i
+
+OBJS = \
+  convolve.o \
+  cost.o \
+  debug.o \
+  hash.o \
+  math.o \
+  misc.o \
+  morph.o \
+  mvect.o \
+  newapi.o \
+  regul.o \
+  sort.o \
+  sparse.o \
+  symlink.o \
+  tuples.o \
+  utils.o
+
+# change to give the executable a name other than yorick
+PKG_EXENAME = yorick
+
+# PKG_DEPLIBS=-Lsomedir -lsomelib   for dependencies of this package
+PKG_DEPLIBS =
+# set compiler (or rarely loader) flags specific to this package
+PKG_CFLAGS = -I..
+PKG_LDFLAGS =
+
+# list of additional package names you want in PKG_EXENAME
+# (typically Y_EXE_PKGS should be first here)
+EXTRA_PKGS=$(Y_EXE_PKGS)
+
+# list of additional files for clean
+PKG_CLEAN=make_doc.i yeti.doc yhdf.doc
+
+# autoload file for this package, if any
+PKG_I_START=$(srcdir)/yeti-start.i $(srcdir)/yhdf-start.i
+# non-pkg.i include files for this package, if any
+PKG_I_EXTRA=$(srcdir)/yhdf.i
+
+#-------------------------------------- standard targets and rules (in Makepkg)
+
+# set macros Makepkg uses in target and dependency names
+# DLL_TARGETS, LIB_TARGETS, EXE_TARGETS
+# are any additional targets (defined below) prerequisite to
+# the plugin library, archive library, and executable, respectively
+PKG_I_DEPS=$(PKG_I)
+Y_DISTMAKE=distmake
+
+include $(Y_MAKEDIR)/Make.cfg
+include $(Y_MAKEDIR)/Makepkg
+include $(Y_MAKEDIR)/Make$(TGT)
+
+# override macros Makepkg sets for rules and other macros
+# Y_HOME and Y_SITE in Make.cfg may not be correct (e.g.- relocatable)
+Y_HOME=$(Y_EXE_HOME)
+Y_SITE=$(Y_EXE_SITE)
+
+# reduce chance of yorick-1.5 corrupting this Makefile
+MAKE_TEMPLATE = protect-against-1.5
+
+#------------------------------------------- targets and rules for this package
+
+doc: yeti.doc yhdf.doc
+
+yeti.doc: $(PKG_I)
+	echo  >make_doc.i "#include \"mkdoc.i\""
+	echo >>make_doc.i "mkdoc, \"$(srcdir)/yeti.i\", \"$@\";"
+	$(Y_EXE) -batch make_doc.i
+
+yhdf.doc: $(PKG_I)
+	echo  >make_doc.i "#include \"mkdoc.i\""
+	echo >>make_doc.i "mkdoc, \"$(srcdir)/yhdf.i\", \"$@\";"
+	$(Y_EXE) -batch make_doc.i
+
+install-doc: yeti.doc yhdf.doc
+	$(YNSTALL) yeti.doc $(Y_EXE_SITE)/doc
+	$(YNSTALL) yhdf.doc $(Y_EXE_SITE)/doc
+
+# simple example:
+#myfunc.o: myapi.h
+# more complex example (also consider using PKG_CFLAGS above):
+#myfunc.o: myapi.h myfunc.c
+#	$(CC) $(CPPFLAGS) $(CFLAGS) -DMY_SWITCH -o $@ -c myfunc.c
+
+%.o: $(srcdir)/%.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
+
+convolve.o: $(srcdir)/yeti.h
+debug.o: $(srcdir)/yeti.h
+hash.o: $(srcdir)/yeti.h ../config.h
+misc.o: $(srcdir)/yeti.h ../config.h
+morph.o: $(srcdir)/yeti.h ../config.h
+sort.o: $(srcdir)/yeti.h ../config.h
+math.o: $(srcdir)/yeti.h ../config.h
+regul.o: $(srcdir)/regul.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -DYORICK -o $@ -c $<
+utils.o: $(srcdir)/yeti.h ../config.h
+#newapi.o:
+
+# -------------------------------------------------------- end of Makefile

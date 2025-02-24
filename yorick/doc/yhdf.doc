@@ -1,0 +1,218 @@
+
+
+
+                          Yorick Documentation
+                for functions, variables, and structures
+                         defined in file yhdf.i
+                   Printed: Mon Feb 24 11:39:33 2025
+
+   Contents:
+
+                                   address
+                                   address
+                                   comment
+                                   date
+                                   dimlist
+                                   elsize
+                                   elsize
+                                   encoding
+                                   file
+                                   file
+                                   ident
+                                   type
+                                   version
+                                   yhd_check
+                                   yhd_format
+                                   yhd_info
+                                   yhd_restore
+                                   yhd_save
+
+                                                  FROM address TO yhd_check
+
+                                                                    address
+     /* SEE yhd_save     */
+
+                                                                    address
+     /* SEE yhd_restore     */
+
+                                                                    comment
+     /* SEE yhd_info     */
+
+                                                                       date
+     /* SEE yhd_info     */
+
+                                                                    dimlist
+     /* SEE yhd_restore     */
+
+                                                                     elsize
+     /* SEE yhd_save     */
+
+                                                                     elsize
+     /* SEE yhd_restore     */
+
+                                                                   encoding
+     /* SEE yhd_info     */
+
+                                                                       file
+     /* SEE yhd_restore     */
+
+                                                                       file
+     /* SEE yhd_save     */
+
+                                                                      ident
+     /* SEE yhd_restore     */
+
+                                                                       type
+     /* SEE yhd_restore     */
+
+                                                                    version
+     /* SEE yhd_info     */
+
+                                                                  yhd_check
+/* DOCUMENT yhd_check(file);
+       -or- yhd_check(file, version, date, encoding, comment);
+     Return 1 (true) if FILE is a valid YHD file; otherwise return 0
+     (false).  The nature of FILE is guessed by reading its header.  Input
+     argument FILE can be a file name (scalar string) of a binary file
+     stream opened for reading; all other arguments are pure outputs and
+     may be omitted (if result is false, the contents of these outputs is
+     undetermined).
+
+   SEE ALSO yhd_info, yhd_save, yhd_restore, yhd_format. */
+
+                                              FROM yhd_format TO yhd_format
+
+                                                                 yhd_format
+/* DOCUMENT         DESCRIPTION OF YHD FILE FORMAT
+
+     A YHD file consists in a header (256 bytes) followed by any number of
+     records (one record for each member of the saved hash_table object).
+
+     The file header is a 256 character array filled with a text string
+     padded with nulls:
+         YetiHD-VERSION (DATE)\n
+         ENCODING\n
+         COMMENT\n
+     where VERSION is the version number (an integer); DATE is the creation
+     date of the file (see Yorick built-in timestamp); ENCODING is a
+     human-readable array of 32 integers separated by commas and enclosed
+     in square brackets (ie.: [n1,n2,....,n32]); COMMENT is an optional
+     comment string.
+
+     All binary data of a YHD file is written following the ENCODING format
+     of the file.
+
+     The format of a record for an array member is as follow:
+     | Number Type  Name     Description
+     | -----------------------------------------------------------------------
+     |      1 long  TYPE     data type of record
+     |      1 long  IDSIZE   number of bytes in member identifier (may be 0)
+     |      1 long  RANK     number of dimensions, 0 if scalar/non-array
+     |   RANK long  DIMLIST  dimension list (absent if RANK is 0)
+     | IDSIZE char  IDENT    identifier of record (see below)
+     |   *special*  DATA     binary data of the record
+
+     TYPE is: <0 - string array      5 - float array      11 - range
+     |         0 - void              6 - double array     12 - evaluator as function
+     |         1 - char array        7 - complex array    13 - evaluator as symbol name
+     |         2 - short array       8 - pointer array
+     |         3 - int array         9 - function
+     |         4 - long array       10 - symbolic link
+     For string array, TYPE is strictly less than zero and is minus the
+     number of characters needed to represent all elements of the array in
+     packed form (more on this below).  Void objects are also used to
+     represent NULL pointer data -- this means that a NULL pointer element
+     takes 3*sizeof(long) bytes to be stored in the file, which may be an
+     issue if you use large pointer array sparsely filled with data.
+
+     IDENT is the full name of the member: it is a IDSIZE char array
+     where null characters are used to separate submember names and with
+     a final null.  If IDSIZE=0, no IDENT is written.
+
+     Arrays of strings are written in packed form, each string being
+     prefixed with '\1' (nil string) or '\2' (non-nil string) and suffixed
+     with '\0', hence:
+     |  '\1' '\0'       (2 bytes) for a nil string
+     |  '\2' ... '\0'   (2+LEN bytes) for a string of length LEN
+     this is needed to distinguish nil-string from "".
+
+     The data part of an arrays of pointers consists in anonymous records
+
+                                             FROM yhd_format TO yhd_restore
+
+     (records with IDSIZE=0 and no IDENT) for each element of the array.
+
+     Non-array members such as functions and symbolic links have the
+     following record:
+     | Number Type  Name     Description
+     | -----------------------------------------------------------------------
+     |      1 long  TYPE     data type of record (9 or 10)
+     |      1 long  IDSIZE   number of bytes in member identifier (may be 0)
+     |      1 long  LENGTH   number of bytes for the name of the function
+     | IDSIZE char  IDENT    identifier of record (see above)
+     | LENGTH char  NAME     name of function or symbolic link
+     Note that the final '\0' of the name is not saved in the file.
+
+     Range members have the following record:
+     | Number Type  Name     Description
+     | -----------------------------------------------------------------------
+     |      1 long  TYPE     data type of record (11)
+     |      1 long  IDSIZE   number of bytes in member identifier (may be 0)
+     |      1 long  FLAGS    flags of range
+     | IDSIZE char  IDENT    identifier of record (see above)
+     |      3 long  RANGE    MIN,MAX,STEP
+
+     Evaluators have the following record:
+     | Number Type  Name     Description
+     | -----------------------------------------------------------------------
+     |      1 long  TYPE     data type of record (12 or 13)
+     |      1 long  IDSIZE   number of bytes in member identifier (may be 0)
+     |      1 long  LENGTH   number of bytes for the name of the evaluator
+     | IDSIZE char  IDENT    identifier of record (see above)
+     | LENGTH char  NAME     name of function or symbolic link
+     Note that the final '\0' of the name is not saved in the file.  The last
+     component of identifier (the member name) must be empty for an evaluator.
+ */
+
+                                                                   yhd_info
+/* DOCUMENT yhd_info, file;
+     Print out some information about YHD file.  FILE can be a file
+     name (scalar string) of a binary file stream opened for reading.
+
+   SEE ALSO yhd_check, yhd_restore, yhd_save, yhd_format. */
+
+                                                                yhd_restore
+/* DOCUMENT yhd_restore(filename);
+       -or- yhd_restore(filename, keylist, ...);
+     Restore and return hash table object saved in YHD file FILENAME.  If
+     additional arguments are provided, they are the names of members to
+     restore.  The default is to restore every member.
+
+   SEE ALSO yhd_check, yhd_info, yhd_save, yhd_format. */
+
+                                                  FROM yhd_save TO yhd_save
+
+                                                                   yhd_save
+/* DOCUMENT yhd_save, filename, obj;
+       -or- yhd_save, filename, obj, keylist, ...;
+     Save contents of hash object OBJ into the Yeti Hierarchical Data (YHD)
+     file FILENAME.  If additional arguments are provided, they are the
+     names of members to save.  The default is to save every member.
+
+     Keyword COMMENT can be used to store a (short) string comment in the
+     file header.  The comment is truncated if it is too long (more than
+     about 130 bytes) to fit into the header.  COMMENT must not contain
+     any DEL (octal 177) character.
+
+     Keyword ENCODING can be used to specify a particular binary data
+     format for the file; ENCODING can be the name of some known data
+     format (see get_encoding) or an array of 32 integers (see
+     set_primitives).  The default is to use the native data format.
+
+     If keyword OVERWRITE is true and file FILENAME already exists, the new
+     file will (silently) overwrite the old one; othwerwise, file FILENAME
+     must not already exist (default behaviour).
+
+
+   SEE ALSO yhd_restore, yhd_info, yhd_check, yhd_format,
+            get_encoding, set_primitives, h_new. */

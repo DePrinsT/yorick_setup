@@ -1,0 +1,63 @@
+#*******************************************************************************
+#
+# "@(#) $Id: ReadMe,v 1.3 2007-02-16 14:33:19 jblebou Exp $"
+#
+# ReadMe of cfitsio yorick plugin library
+#
+# History
+# -------
+# $Log: not supported by cvs2svn $
+# Revision 1.2  2007/02/16 14:26:58  jblebou
+# Major changes
+#
+# Revision 1.1  2007/02/16 10:06:02  gzins
+# Added
+#
+#
+#
+
+cfitsio is a Yorick plugin for the cfitsio library, with some
+high level routines.
+
+0/Informations
+   The file 'include/fitsio.h' is NOT used for the compilation.
+   The compiler uses the 'fitsio.h' file found in the Make.cfg
+   This 'include/fitsio.h' is only used to dynamically recompute the
+   'yorick/cfitsioPluginWrapper.i' file based on rules defined in
+   '../../tools/congig/*' and 'config/userTemplate.xml'
+
+1/Prerequisite:
+1.1/ Yorick
+    yorick >= 2.1 should be installed.
+    cfitsioPlugin is known to compile with yorick
+    2.1.01 (tested on MacOSX), 2.1.02 (MacOSX)
+
+1.2/ CFITSIO
+    cfitsio library should be installed on your computer. You
+    need 'libcfitsio.a' and 'fitsio.h' The wrapper is known to compile
+    with cfitsio version 2.51 but not with cfitsio 3.
+
+2/ Installation:
+2.1/ Prepare Makefile
+    Enter in src directory, and edit Make.cfg file
+    so that the compiler can find the requested include and
+    library files (fitsio.h and libcfitsio.a)
+
+2.2/ Compile and install
+    To compile, execute from src directory: 
+        make clean all
+    To test the plugin, execute form src directory:
+        make test
+    To install the plugin in your yorick architecture,
+    execute from the src directory:
+        make install_plugin
+
+3/ Add CFITSIO functions:
+    You can add a wrapper for a cfitsio function not already wrapped
+    by un-commted it in include/cfitsio.h, then execute
+        make update
+    in the yorick/ directory and then
+        make clean all install_plugin
+    from the src/ directory. Note that the best would be to also
+    add an interpreted function protecting your wrapper in the
+    yorick/cfitsioPlugin.i file.

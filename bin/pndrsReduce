@@ -1,0 +1,50 @@
+#! /home/toond/software/yorick/yorick/bin/yorick -batch
+
+/* Load pndrs */
+include,"pndrs.i";
+pndrsBatchMakeSilentGraphics, 1;
+yocoErrorSet,0;
+batch,0;
+
+/* Process arguments */
+argv = get_argv();
+
+/* Define loglevel */
+pndrsArgvSetLogLevel, argv;
+
+/* Get options */
+noSpecCal = overwrite = mode = [];
+if (anyof(argv=="-test") ) pndrsVersion = "t"+pndrsVersion
+if( anyof(argv=="-o") )    overwrite=1;
+
+/* Process argument mode
+   Should select between bright, abcd, ac
+   Can add ns, nc, faint... */
+mode = pndrsGetArgument(argv, "--mode=", default="abcd");
+
+/* Get the average files keywords */
+averageFiles = tonum( pndrsGetArgument(argv, "--averageFiles=", default="1") );
+
+/* Define inputDit and outputDir */
+inputDir = ".";
+pndrsBatchProductDir, inputDir, outputDir, app=mode;
+ 
+/* Compute all matrix in current dir */
+if( noneof(argv=="-noMatrix") )
+  pndrsComputeAllMatrix, inputDir=inputDir;
+
+/* Compute all specCal in current dir */
+if( noneof(argv=="-noSpecCal") )
+  pndrsComputeAllSpecCal, inputDir=inputDir;
+
+/* Reduce all data in current dir */
+if( noneof(argv=="-noOiData") )
+  pndrsComputeAllOiData, inputDir=inputDir, mode=mode, overwrite=overwrite;
+
+/* Calibrate all oidata */
+if( anyof(argv=="-calibrate") )
+  pndrsCalibrateAllOiData, inputDir=outputDir, rmPdf=1, averageFiles=averageFiles;
+
+/* quit */
+quit;
+

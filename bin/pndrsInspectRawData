@@ -1,0 +1,22 @@
+#! /home/toond/software/yorick/yorick/bin/yorick -batch
+
+/* Load pndrs */
+include,"pndrs.i";
+pndrsBatchMakeSilentGraphics, 2;
+batch,0;
+
+inputRawFile = [];
+
+/* Process arguments */
+argv = get_argv();
+
+if ( is_array( (id=where(argv=="-f")) ) ) {
+  inputRawFile = argv(id(1)+1);
+  yocoLogInfo,"Start inspection at file:",inputRawFile;
+}
+
+/* Inspect a single data file (to be choosen) in current dir */
+pndrsInspectRawData,inputRawFile=inputRawFile;
+
+quit;
+

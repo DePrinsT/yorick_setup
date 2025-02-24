@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+********************************************************************************
+ LAOG project
+
+ "@(#) $Id: moduleDescription.xml,v 1.2 2007-01-25 08:44:38 gzins Exp $"
+
+ History
+ ~~~~~~~
+ $Log: not supported by cvs2svn $
+ Revision 1.1.1.1  2007/01/25 08:40:41  ccmgr
+ Creation
+
+********************************************************************************
+ NAME
+ moduleDescription.xml - Give module informations
+ 
+ DESCRIPTION
+ moduleDescription.xml gives informations about: 
+ - the module description
+ - the module responsible
+ - the responsible's institute
+ - the package whom belongs to this module
+
+ EXAMPLES
+    <module name="dummymod">
+        <desc>Dummy module description</desc>
+        <resp>FirstName LastName</resp>
+        <institute>Institute</institute>
+        <package>PackageName</package>
+    </module>
+
+-->
+
+<module name="yoco">
+    <desc>Yorick Contribution</desc>
+    <resp>F. Millour, J-B. Lebouquin</resp>
+    <institute>LAOG</institute>
+    <package>YORICK</package>
+</module>

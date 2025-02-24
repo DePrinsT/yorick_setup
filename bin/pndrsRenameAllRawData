@@ -1,0 +1,10 @@
+#! /home/toond/software/yorick/yorick/bin/yorick -batch
+
+/* Load pndrs */
+include,"pndrs.i";
+yocoErrorSet,0;
+batch,0;
+
+pndrsRenameAllRawData, inputDir=".";
+
+quit;

@@ -1,0 +1,58 @@
+
+/* Load pndrs */
+include,"pndrs.i";
+pndrsBatchMakeSilentGraphics, 1;
+yocoErrorSet,0;
+batch,0;
+
+mode = "abcd";
+
+/* Get the input dir */				
+inputDir = get_cwd()+"/";
+date     = yocoStrrtok(get_cwd(), "/")(2);
+
+/* Define the possible output dirs */
+extern pndrsDefaultRootOutput;
+pndrsDefaultRootOutput = ["/data-vlti/reduced/"+date+"/pionier_reduced",
+                          "/diskc/PrivateData/PIONIER/DATA"];
+
+/* Get the directory of reduced product */
+pndrsBatchProductDir, inputDir, outputDir, app=mode;
+
+yocoLogInfo,"\nReduced and calibrated files will be stored in:",outputDir;
+yocoLogInfo," ";
+
+while( 1 ) {
+
+  /* Catch the interuption from the user */
+  if (catch(0x04)) {
+    yocoLogError,"\n\nEnd by user.";
+    quit;
+  }
+
+  /* Goback into the RAW data dir */
+  cd,inputDir;
+  
+  /* remove the log to avoid pb with new files that
+     may have incomplete headers */
+  remove, "pnlog.fits";
+   
+  /* Reduce raw data */
+  pndrsComputeAllMatrix, inputDir=".";
+  pndrsComputeAllSpecCal, inputDir=".";
+  pndrsComputeAllOiData, inputDir=".", mode=mode;
+  
+  /* Calibrate them. Remove the results from
+     previous calibrations */
+  cd,outputDir;
+  pndrsCalibrateAllOiData, inputDir=".", rmPdf=1;
+
+  yocoLogInfo,"\nReduced and calibrated files are available in:",outputDir;
+
+  /* Wait for few seconds */
+  yocoLogInfo,"\nWait for 30 seconds to run again the data reduction..."
+  pause,30000;
+
+}
+
+quit;

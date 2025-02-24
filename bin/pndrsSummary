@@ -1,0 +1,30 @@
+#! /home/toond/software/yorick/yorick/bin/yorick -batch
+
+/* Load pndrs */
+include,"pndrs.i";
+pndrsBatchMakeSilentGraphics, 1;
+yocoErrorSet,0;
+batch,0;
+
+/* Process arguments */
+argv = get_argv();
+
+if( anyof(argv=="-o") )           overwrite=1;
+
+oiLogDir = [];
+if ( !pndrsReadLog("./", oiLogDir, overwrite=overwrite) ) {
+  yocoError,"Cannot read the logFile.";
+  quit;
+}
+
+outputFile = "summary.txt";
+remove,outputFile;
+f = create(outputFile);
+
+output = swrite(format="%.4f %s %s",oiLogDir.mjdObs,oiLogDir.fileName,pndrsGetSetup(,oiLogDir));
+
+write, f, output;
+
+close,f;
+
+quit;

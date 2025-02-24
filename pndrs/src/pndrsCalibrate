@@ -1,0 +1,22 @@
+
+/* Load pndrs */
+include,"pndrs.i";
+pndrsBatchMakeSilentGraphics, 1;
+yocoErrorSet,0;
+batch,0;
+
+/* Process arguments */
+argv = get_argv();
+
+/* Define loglevel */
+pndrsArgvSetLogLevel, argv;
+
+/* Get the average files keywords */
+averageFiles = tonum( pndrsGetArgument(argv, "--averageFiles=", default="1") );
+
+/* Calibrate all in current directory */
+pndrsCalibrateAllOiData, inputDir=".", rmPdf=1, averageFiles=averageFiles;
+
+/* Quit */
+quit;
+

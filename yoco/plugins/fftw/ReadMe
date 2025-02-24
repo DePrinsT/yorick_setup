@@ -1,0 +1,31 @@
+#*******************************************************************************
+#
+# "@(#) $Id: ReadMe,v 1.1 2007-02-01 08:07:02 gzins Exp $"
+#
+# ReadMe of fftw yorick plugin library
+#
+# History
+# -------
+# $Log: not supported by cvs2svn $
+#
+
+Yorick plugin with simple fourier functions based on FFTW library.
+
+1/Prerequisite:
+1.1/ Yorick
+    yorick >= 2.1 should be installed
+
+1.2/ FFTW
+    fftw library should be installed on your computer.
+- libfftw.so and librfftw are in /sw/lib
+- fftw.h and rfftw.h are in /sw/include
+
+2/ Installation
+2.1/ Prepare Makefile
+    Enter in src directory, and edit Make.cfg file
+2.2/ Compile and install
+    From src directory, execute 
+        make clean all install
+2.3/ Test
+    Enter in test directory, and execute
+        yorick -i fftwTest.i

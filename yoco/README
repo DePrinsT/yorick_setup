@@ -1,0 +1,94 @@
+********************
+*** Introduction ***
+********************
+
+YOCO (stands for YOrick COntributions) is a series of contributions in
+the form of scripts or mini-plugins. These contributions range from
+string manipulation, documentation maintenance, Astronomy toolbox, CDS
+input/output routines, up to a genuine yorick graphical interface file
+browser.
+
+The yoco plugin is meant to be used with yorick v>1.6.
+Several modules exists that can be compiled independently. They are
+the following:
+- a yorick cfitsio plugin
+- a yorick fftw2 plugin
+- a specific plugin called "yoco" to handle specific error types and
+so on
+- a series of packages using the features of yoco.
+
+********************
+***   Licences   ***
+********************
+
+Yoco is distributed under the GPL licence (see COPYING file). Authors
+of this software are listed in the AUTHORS file.
+
+The software provided in the "distrib" subdirectory (yorick, fftw, &
+cfitsio) have their own licences (see details in the packages).
+
+The catalogs provided in the "catalogs" subdirectory and used in the
+calibration routines come from the CDS
+(http://cdsads.u-strasbg.fr/abs/2000A%26AS..143...23O) and should be
+cited individually if used in a publication:
+- CADARS catalog  http://cdsads.u-strasbg.fr/abs/2001A%26A...367..521P
+- CHARM catalog   http://cdsads.u-strasbg.fr/abs/2002A%26A...386..492R
+- Bordé catalog   http://cdsads.u-strasbg.fr/abs/2002A%26A...393..183B
+- CHARM2 catalog  http://cdsads.u-strasbg.fr/abs/2005A%26A...431..773R
+- Merand catalog  http://cdsads.u-strasbg.fr/abs/2005A%26A...433.1155M
+- JSDC catalog    http://cdsads.u-strasbg.fr/abs/2010SPIE.7734E.140L
+
+********************
+*** Requirements ***
+********************
+
+You need an installed version of yorick and a specific environment
+variable called INTROOT where the yorick software is installed. The
+plugins needs the following libraries and softwares:
+- cfitsio v>2490
+- fftw2 v>2.1.5 <3.X 
+- yorick v>1.6, which need itself readline and rlterm.
+For convenience, these packages are distributed together with yoco in
+the "distrib" subdirectory, and can be compiled together with the
+package.
+
+********************
+*** Installation ***
+********************
+
+* Quick way:
+To build the different necessary softwares and libraries, go to the
+yoco/distrib directory and type in:
+$ ./install.sh 
+(You can add the -h option to get detail on the way to use your libs)
+
+A series of questions are asked in an interactive way to compile and
+install the different libraries and softwares.
+
+* Detailed way:
+You have to go to the different places to compile the plugins:
+
+cd yoco/packages
+make clean all install
+
+cd ../plugins/cfitsio/src/
+make clean all install
+cd ../yorick/
+make clean all install
+
+cd ../../yoco/src/
+make clean all install
+cd ../yorick/
+make clean all install
+
+cd ../../fftw/src/
+make clean all install
+cd ../yorick/
+make clean all install
+
+cd ../../../doc
+yorick -batch generateAllDocs.i
+
+Notes:
+The fftw3 is now included into the distrib directory but the
+associated yoco plugin will be set up on demand.

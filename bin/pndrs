@@ -1,0 +1,1 @@
+rlwrap /home/toond/software/yorick/yorick/bin/yorick -i pndrs.i

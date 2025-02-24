@@ -1,0 +1,13 @@
+
+/* Load pndrs */
+include,"pndrs.i";
+pndrsBatchMakeSilentGraphics, 1;
+batch,0;
+
+/* Process arguments */
+
+/* Reduce all data in current dir */
+pndrsCheckAllObject, inputDir=".";
+
+quit;
+

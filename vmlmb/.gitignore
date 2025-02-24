@@ -1,0 +1,9 @@
+*~
+devel/
+idl/
+latex/
+orig/
+julia/
+work/
+__pycache__/
+*.pyc

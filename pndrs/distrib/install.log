@@ -1,0 +1,14 @@
+/bin/sh: 1: eval: rlterm: not found
+ . . . 'all' done
+Installing into target: /home/toond/software/yorick/yorick/i
+.....include:
+           pndrs.i pndrsBatch.i pndrsBrowser.i pndrsConfig.i pndrsFiles.i pndrsImage.i pndrsOiData.i pndrsPlot.i pndrsProcess.i pndrsSignal.i pndrsCalibrate.i pndrsInteractive.i pndrsSim.i pndrsArchive.i pndrsTest.i
+           sclguiVOTableToTSV.xsl
+Installing into target: /home/toond/software/yorick
+Use yorick executable:  /home/toond/software/yorick/yorick/bin/yorick
+Use readline command:   rlwrap
+.....bin:
+           pndrsCalibrate pndrsReduce pndrsPipeline pndrsBrowser pndrsInspectRawData pndrsCheckAllObject pndrsRenameAllRawData pndrsInspectRawData pndrsDownload pndrsSummary pndrsShowPixel pndrsValidateProduct pioni_dark_calibration pioni_kappa_matrix pioni_oidata_raw pioni_spectral_calibration pndrs
+ . . . installation done
+/bin/sh: 1: eval: rlterm: not found
+ . . . clean done
